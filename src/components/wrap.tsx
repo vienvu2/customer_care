@@ -1,3 +1,4 @@
+import { Header } from "@/containers/header"
 import styled from "styled-components"
 
 type Props = {
@@ -11,7 +12,7 @@ type Props = {
 export const Layout = ({ children, header, footer, sidebar }: Props) => {
   return (
     <Styled.Wrap>
-      <Styled.Header>{header || <h1>Header</h1>}</Styled.Header>
+      <Styled.Header>{header || <Header />}</Styled.Header>
       <Styled.Main>
         {sidebar && <aside>{sidebar}</aside>}
         <div>{children}</div>
