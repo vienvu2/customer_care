@@ -1,25 +1,9 @@
+import { UserService } from '@/lib/services/userService';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET () {
     try {
-        const users = [
-            { id: 1, name: 'User 1', email: 'user1@example.com' },
-            { id: 2, name: 'User 2', email: 'user2@example.com' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-            { id: 3, name: 'User 3', email: '' },
-        ];
-
+        const users = await UserService.getAllUsers();
         return NextResponse.json({
             success: true,
             data: users
@@ -37,15 +21,18 @@ export async function POST (request: NextRequest) {
         const body = await request.json();
 
         // Logic tạo user mới
-        const newUser = {
-            id: Date.now(),
-            name: body.name,
-            email: body.email
-        };
+        const createdUser = await UserService.createUser({
+            email: body.email,
+            phoneNumber: body.phoneNumber || '',
+            username: body.username || '',
+            password: body.password || '',
+            fullName: body.fullName || '',
+            role: body.role || 'user' // Default role if not provided
+        });
 
         return NextResponse.json({
             success: true,
-            data: newUser
+            data: createdUser
         }, { status: 201 });
     } catch (error) {
         return NextResponse.json(
