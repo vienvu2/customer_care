@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import useList from "@/hook/user"
+import { Layout } from "@/components/wrap"
 
 export default function Home() {
   const { fetchUsers, createUser, users, loading } = useList()
@@ -11,7 +12,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div>
+    <Layout>
       <h2>Customer Care System</h2>
 
       <button
@@ -42,6 +43,6 @@ export default function Home() {
           </ul>
         </div>
       )}
-    </div>
+    </Layout>
   )
 }
