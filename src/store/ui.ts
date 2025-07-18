@@ -43,11 +43,26 @@ export const useUIStore = create<UIState>((set, get) => ({
 
     setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
-    toggleTheme: () => set((state) => ({
-        theme: state.theme === 'light' ? 'dark' : 'light'
-    })),
+    toggleTheme: () => {
+        const newTheme = get().theme === 'light' ? 'dark' : 'light'
 
-    setTheme: (theme) => set({ theme }),
+        // Tự động update CSS attribute
+        if (typeof window !== 'undefined') {
+            document.documentElement.setAttribute('data-theme', newTheme)
+        }
+
+        set({ theme: newTheme })
+    },
+
+    setTheme: (theme) => {
+        // Tự động update CSS attribute
+        if (typeof window !== 'undefined') {
+            document.documentElement.setAttribute('data-theme', theme)
+        }
+
+        set({ theme })
+    },
+
 
     addNotification: (notification) => set((state) => ({
         notifications: [

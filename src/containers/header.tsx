@@ -1,7 +1,8 @@
 "use client"
 import { Button } from "@/atom/button"
 import { Input } from "@/atom/input"
-import { PanelRightClose, PanelRightOpen } from "lucide-react"
+import { ThemeToggle } from "@/atom/theme-toggle"
+import { Bell, PanelRightClose, PanelRightOpen } from "lucide-react"
 import { useState } from "react"
 import { styled } from "styled-components"
 
@@ -29,11 +30,10 @@ export const Header = () => {
           Create
         </Button>
       </Styled.Center>
-      <div className="header-right">
-        <span className="icon-setting" />
-        <span className="icon-user" />
-        <button className="logout-btn">Logout</button>
-      </div>
+      <Styled.Right>
+        <ThemeToggle />
+        <Bell color="white" size={14} />
+      </Styled.Right>
     </Styled.Wrap>
   )
 }
@@ -43,6 +43,7 @@ const Styled = {
     display: flex;
     height: 40px;
     justify-content: space-between;
+    align-items: center;
     align-items: center;
     padding: 10px 20px;
     background-color: #242424ff;
@@ -63,6 +64,7 @@ const Styled = {
   Center: styled.div`
     max-width: 600px;
     width: 100%;
+    align-items: center;
     display: flex;
     align-items: center;
 
@@ -78,12 +80,19 @@ const Styled = {
 
   Search: styled.div`
     flex-grow: 1;
+    align-items: center;
     display: flex;
     align-items: center;
   `,
 
   Left: styled.div`
+    align-items: center;
     display: flex;
     align-items: center;
+  `,
+  Right: styled.div`
+    display: flex;
+    align-items: center;
+    gap: 12px;
   `,
 }
