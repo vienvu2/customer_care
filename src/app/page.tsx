@@ -3,88 +3,15 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import styles from "./page.module.css"
-import { User, ApiResponse } from "@/lib/types"
+import { ApiResponse } from "@/lib/types"
+import { User } from "@prisma/client"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
-  const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
-
+  const route = useRouter()
   useEffect(() => {
-    fetchUsers()
+    route.push("/dashboard")
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch("/api/users")
-      const result: ApiResponse<User[]> = await response.json()
-
-      if (result.success && result.data) {
-        setUsers(result.data)
-      }
-    } catch (error) {
-      console.error("Failed to fetch users:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const createUser = async (name: string, email: string) => {
-    try {
-      const response = await fetch("/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email }),
-      })
-
-      const result: ApiResponse<User> = await response.json()
-
-      if (result.success && result.data) {
-        setUsers((prev) => [...prev, result.data!])
-      }
-    } catch (error) {
-      console.error("Failed to create user:", error)
-    }
-  }
-
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-
-        <div>
-          <h2>Customer Care System</h2>
-          {loading ? (
-            <p>Loading users...</p>
-          ) : (
-            <div>
-              <h3>Users ({users.length})</h3>
-              <ul>
-                {users.map((user) => (
-                  <li key={user.id}>
-                    {user.name} - {user.email}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        <button
-          onClick={() => createUser("Test User", "test@example.com")}
-          className={styles.primary}
-        >
-          Add Test User
-        </button>
-      </main>
-    </div>
-  )
+  return <div>Đang phát triển tính năng Dashboard cho người dùng.</div>
 }

@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/lib/types"
+import { ApiResponse, UserCreate } from "@/lib/types"
 import { User } from "@prisma/client"
 import { useState } from "react"
 
@@ -20,7 +20,7 @@ const useList = () => {
         }
     }
 
-    const createUser = async (data: User) => {
+    const createUser = async (data: UserCreate) => {
         try {
             const response = await fetch("/api/users", {
                 method: "POST",
