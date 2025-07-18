@@ -1,3 +1,4 @@
+import { colors } from "@/store/theme"
 import styled from "styled-components"
 
 type Props = {
@@ -14,8 +15,6 @@ type Props = {
 export const Button = ({
   onClick,
   children,
-  leftIcon,
-  rightIcon,
   type = "primary",
   outline = false,
   size = "medium",
@@ -36,11 +35,11 @@ export const Button = ({
 const Styled = {
   Wrap: styled.div``,
   Button: styled.button`
-    padding: 12px 24px;
     color: #fff;
-    background-color: #0070f3;
+    background-color: ${colors.primary};
     border: none;
     border-radius: 5px;
+    font-family: inherit;
     cursor: pointer;
 
     &:hover {
@@ -52,24 +51,40 @@ const Styled = {
       cursor: not-allowed;
     }
     &.b-primary {
-      background-color: #0070f3;
+      background-color: ${colors.primary};
       color: white;
     }
     &.b-secondary {
-      background-color: #6c757d;
+      background-color: ${colors.secondary};
       color: white;
     }
     &.b-danger {
-      background-color: #dc3545;
+      background-color: ${colors.danger};
       color: white;
     }
     &.b-success {
-      background-color: #28a745;
+      background-color: ${colors.success};
       color: white;
     }
     &.b-warning {
-      background-color: #ffc107;
+      background-color: ${colors.warning};
       color: black;
+    }
+
+    &.b-small {
+      height: 28px;
+      padding: 0 12px;
+      font-size: 12px;
+    }
+    &.b-medium {
+      height: 32px;
+      padding: 0 16px;
+      font-size: 14px;
+    }
+    &.b-large {
+      height: 40px;
+      padding: 0 20px;
+      font-size: 16px;
     }
   `,
 

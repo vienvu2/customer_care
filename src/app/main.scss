@@ -9,9 +9,9 @@ body {
 
 :root {
   /* Light theme colors */
-  --color-primary: #0070f3;
-  --color-primary-hover: #0051cc;
-  --color-primary-light: #e6f3ff;
+  --color-primary: #04a8a3;
+  --color-primary-hover: #028f8b;
+  --color-primary-light: #e0f2f1;
 
   --color-secondary: #6b7280;
   --color-secondary-hover: #4b5563;
@@ -19,6 +19,8 @@ body {
   --color-success: #10b981;
   --color-success-light: #d1fae5;
   --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+  --color-danger-light: #fca5a5;
   --color-warning-light: #fef3c7;
   --color-error: #ef4444;
   --color-error-light: #fee2e2;
@@ -62,9 +64,9 @@ body {
 
 [data-theme="dark"] {
   /* Dark theme colors */
-  --color-primary: #3b82f6;
-  --color-primary-hover: #2563eb;
-  --color-primary-light: #1e3a8a;
+  --color-primary: #04a8a3;
+  --color-primary-hover: #028f8b;
+  --color-primary-light: #0f766e;
 
   --color-secondary: #9ca3af;
   --color-secondary-hover: #d1d5db;

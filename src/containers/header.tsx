@@ -2,6 +2,7 @@
 import { Button } from "@/atom/button"
 import { Input } from "@/atom/input"
 import { ThemeToggle } from "@/atom/theme-toggle"
+import { colors } from "@/store/theme"
 import { Bell, PanelRightClose, PanelRightOpen } from "lucide-react"
 import { useState } from "react"
 import { styled } from "styled-components"
@@ -13,9 +14,15 @@ export const Header = () => {
       <Styled.Left>
         <Styled.MenuToggle>
           {menuOpen ? (
-            <PanelRightClose color="white" onClick={() => setMenuOpen(false)} />
+            <PanelRightClose
+              color={colors.textPrimary}
+              onClick={() => setMenuOpen(false)}
+            />
           ) : (
-            <PanelRightOpen color="white" onClick={() => setMenuOpen(true)} />
+            <PanelRightOpen
+              color={colors.textPrimary}
+              onClick={() => setMenuOpen(true)}
+            />
           )}
         </Styled.MenuToggle>
       </Styled.Left>
@@ -27,7 +34,7 @@ export const Header = () => {
           onClick={() => console.log("Create new item")}
           leftIcon={<span className="icon-plus" />}
         >
-          Create
+          Tạo mới
         </Button>
       </Styled.Center>
       <Styled.Right>
@@ -41,23 +48,22 @@ export const Header = () => {
 const Styled = {
   Wrap: styled.div`
     display: flex;
-    height: 40px;
+    height: 50px;
     justify-content: space-between;
     align-items: center;
     align-items: center;
     padding: 10px 20px;
-    background-color: #242424ff;
+    background-color: ${colors.bgPrimary};
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   `,
   MenuToggle: styled.button`
     background: none;
     border: none;
     cursor: pointer;
-    color: white;
     margin-right: 20px;
 
     &:hover {
-      color: #0070f3;
+      color: ${colors.primary};
     }
   `,
 

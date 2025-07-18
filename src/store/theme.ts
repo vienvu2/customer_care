@@ -12,6 +12,8 @@ export const colors = {
     warningLight: 'var(--color-warning-light)',
     error: 'var(--color-error)',
     errorLight: 'var(--color-error-light)',
+    danger: 'var(--color-danger)',
+    dangerLight: 'var(--color-danger-light)',
     info: 'var(--color-info)',
     infoLight: 'var(--color-info-light)',
 

@@ -11,7 +11,7 @@ export const SideBar = () => {
         <Styled.MenuItem href="/leads" className="active">
           Leads
         </Styled.MenuItem>
-        <Styled.MenuItem href="/customers" className="active">
+        {/* <Styled.MenuItem href="/customers" className="active">
           Users
         </Styled.MenuItem>
         <Styled.MenuItem href="/settings" className="active">
@@ -22,7 +22,7 @@ export const SideBar = () => {
         </Styled.MenuItem>
         <Styled.MenuItem href="/help" className="active">
           Help
-        </Styled.MenuItem>
+        </Styled.MenuItem> */}
       </Styled.Menu>
     </Styled.Sidebar>
   )
@@ -30,16 +30,10 @@ export const SideBar = () => {
 
 const Styled = {
   Sidebar: styled.div``,
-
   Menu: styled.div``,
-
   MenuItem: styled(Link)`
     padding: 10px;
     display: block;
     cursor: pointer;
-
-    &:hover {
-      background-color: #e0e0e0;
-    }
   `,
 }

@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { PT_Sans } from "next/font/google"
 import { Layout } from "@/containers/wrap"
-import "./main.scss" 
-const ptSan = PT_Sans({
+import "./main.scss"
+export const ptSan = PT_Sans({
   weight: "400",
 })
 
@@ -16,8 +16,7 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
-}>) { 
- 
+}>) {
   return (
     <html lang="en">
       <body className={`${ptSan.className}  `}>

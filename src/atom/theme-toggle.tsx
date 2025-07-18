@@ -4,9 +4,14 @@ import styled from "styled-components"
 import { useUIStore } from "@/store/ui"
 import { colors, spacing, radius } from "@/store/theme"
 import { Moon, Sun } from "lucide-react"
+import { useEffect } from "react"
 
 export const ThemeToggle = () => {
   const { theme, toggleTheme } = useUIStore()
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme)
+  }, [theme])
 
   return (
     <Styled.Button onClick={toggleTheme} aria-label="Toggle theme">
