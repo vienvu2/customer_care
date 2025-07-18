@@ -2,6 +2,8 @@
 import { Header } from "@/containers/header"
 import { SideBar } from "@/containers/sidebar"
 import { styled } from "styled-components"
+import { Footer } from "./footer"
+import { RightSide } from "./rightSide"
 
 type Props = {
   children: React.ReactNode
@@ -9,9 +11,16 @@ type Props = {
   footer?: React.ReactNode
   main?: React.ReactNode
   sidebar?: React.ReactNode
+  rightsidebar?: React.ReactNode
 }
 
-export const Layout = ({ children, header, footer, sidebar }: Props) => {
+export const Layout = ({
+  children,
+  header,
+  footer,
+  sidebar,
+  rightsidebar,
+}: Props) => {
   return (
     <Styled.Wrap>
       <Styled.Header>{header || <Header />}</Styled.Header>
@@ -20,8 +29,11 @@ export const Layout = ({ children, header, footer, sidebar }: Props) => {
         <Styled.Content>
           <div>{children}</div>
         </Styled.Content>
+        <Styled.RightSidebar>
+          {rightsidebar || <RightSide />}
+        </Styled.RightSidebar>
       </Styled.Main>
-      <Styled.Footer>Footer</Styled.Footer>
+      <Styled.Footer>{footer || <Footer />}</Styled.Footer>
     </Styled.Wrap>
   )
 }
@@ -45,6 +57,13 @@ const Styled = {
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     flex-shrink: 0; // Prevent sidebar from shrinking
+  `,
+  RightSidebar: styled.div`
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; // Prevent right sidebar from shrinking
   `,
 
   Content: styled.div`

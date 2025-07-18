@@ -1,6 +1,6 @@
 'use client'
 import { Table } from "@/components/table"
-import { Layout } from "@/components/wrap"
+import { Layout } from "@/containers/wrap"
 import { Lead } from "@prisma/client"
 
 const LeadPage = () => {

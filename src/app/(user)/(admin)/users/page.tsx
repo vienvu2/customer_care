@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import useList from "@/hook/user"
-import { Layout } from "@/components/wrap"
+import { Layout } from "@/containers/wrap"
 import { Table } from "@/components/table"
 import { Button } from "@/atom/button"
 
