@@ -1,60 +1,34 @@
 "use client"
+import { Button } from "@/atom/button"
+import { Input } from "@/atom/input"
+import { PanelRightClose, PanelRightOpen } from "lucide-react"
 import { useState } from "react"
 import { styled } from "styled-components"
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
-
   return (
-    // <header className="header-container">
-    //   <div className="header-left">
-    //     <button
-    //       className="menu-toggle"
-    //       onClick={() => setMenuOpen((open) => !open)}
-    //       aria-label="Toggle menu"
-    //     >
-    //       <span className="icon-menu" />
-    //     </button>
-    //     <span className="app-icon" />
-    //     <img src="/logo.png" alt="Logo" className="logo" />
-    //   </div>
-    //   <div className="header-center">
-    //     <input
-    //       type="text"
-    //       className="search-input"
-    //       placeholder="Search..."
-    //       aria-label="Search"
-    //     />
-    //     <button className="create-btn">Create</button>
-    //   </div>
-    //   <div className="header-right">
-    //     <span className="icon-setting" />
-    //     <span className="icon-user" />
-    //     <button className="logout-btn">Logout</button>
-    //   </div>
-    //   {menuOpen && <nav className="side-menu">{/* Menu content here */}</nav>}
-    // </header>
     <Styled.Wrap>
-      <Styled.HeaderLeft>
-        <button
-          className="menu-toggle"
-          onClick={() => setMenuOpen((open) => !open)}
-          aria-label="Toggle menu"
+      <Styled.Left>
+        <Styled.MenuToggle>
+          {menuOpen ? (
+            <PanelRightClose color="white" onClick={() => setMenuOpen(false)} />
+          ) : (
+            <PanelRightOpen color="white" onClick={() => setMenuOpen(true)} />
+          )}
+        </Styled.MenuToggle>
+      </Styled.Left>
+      <Styled.Center>
+        <Styled.Search>
+          <Input />
+        </Styled.Search>
+        <Button
+          onClick={() => console.log("Create new item")}
+          leftIcon={<span className="icon-plus" />}
         >
-          <span className="icon-menu" />
-        </button>
-        <span className="app-icon" />
-        <img src="/logo.png" alt="Logo" className="logo" />
-      </Styled.HeaderLeft>
-      <div className="header-center">
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search..."
-          aria-label="Search"
-        />
-        <button className="create-btn">Create</button>
-      </div>
+          Create
+        </Button>
+      </Styled.Center>
       <div className="header-right">
         <span className="icon-setting" />
         <span className="icon-user" />
@@ -67,34 +41,49 @@ export const Header = () => {
 const Styled = {
   Wrap: styled.div`
     display: flex;
+    height: 40px;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #f4f4f4;
+    background-color: #242424ff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   `,
+  MenuToggle: styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    margin-right: 20px;
 
-  HeaderLeft: styled.div`
+    &:hover {
+      color: #0070f3;
+    }
+  `,
+
+  Center: styled.div`
+    max-width: 600px;
+    width: 100%;
     display: flex;
     align-items: center;
 
-    .menu-toggle {
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-right: 20px;
-    }
-
-    .app-icon {
-      width: 30px;
-      height: 30px;
-      background-color: #0070f3;
-      border-radius: 50%;
+    input {
+      flex-grow: 1;
       margin-right: 10px;
     }
 
-    .logo {
-      height: 40px;
+    button {
+      margin-left: 10px;
     }
+  `,
+
+  Search: styled.div`
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+  `,
+
+  Left: styled.div`
+    display: flex;
+    align-items: center;
   `,
 }

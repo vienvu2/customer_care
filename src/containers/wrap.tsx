@@ -42,6 +42,7 @@ const Styled = {
   Wrap: styled.div`
     min-height: 100vh;
     color: #333;
+    background-color: #f4f4f4;
   `,
   Header: styled.div``,
   Footer: styled.div``,
