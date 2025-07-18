@@ -4,6 +4,7 @@ import { SideBar } from "@/containers/sidebar"
 import { styled } from "styled-components"
 import { Footer } from "./footer"
 import { RightSide } from "./rightSide"
+import { useUIStore } from "@/store/ui"
 
 type Props = {
   children: React.ReactNode
@@ -21,11 +22,14 @@ export const Layout = ({
   sidebar,
   rightsidebar,
 }: Props) => {
+  const { sidebarOpen } = useUIStore()
   return (
     <Styled.Wrap>
       <Styled.Header>{header || <Header />}</Styled.Header>
       <Styled.Main>
-        <Styled.Sidebar>{sidebar || <SideBar />}</Styled.Sidebar>
+        {sidebarOpen && (
+          <Styled.Sidebar>{sidebar || <SideBar />}</Styled.Sidebar>
+        )}
         <Styled.Content>
           <div>{children}</div>
         </Styled.Content>
