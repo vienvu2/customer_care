@@ -1,10 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import styles from "./page.module.css"
-import { ApiResponse } from "@/lib/types"
-import { User } from "@prisma/client"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 export default function Home() {

@@ -6,8 +6,36 @@ export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <header className="header-container">
-      <div className="header-left">
+    // <header className="header-container">
+    //   <div className="header-left">
+    //     <button
+    //       className="menu-toggle"
+    //       onClick={() => setMenuOpen((open) => !open)}
+    //       aria-label="Toggle menu"
+    //     >
+    //       <span className="icon-menu" />
+    //     </button>
+    //     <span className="app-icon" />
+    //     <img src="/logo.png" alt="Logo" className="logo" />
+    //   </div>
+    //   <div className="header-center">
+    //     <input
+    //       type="text"
+    //       className="search-input"
+    //       placeholder="Search..."
+    //       aria-label="Search"
+    //     />
+    //     <button className="create-btn">Create</button>
+    //   </div>
+    //   <div className="header-right">
+    //     <span className="icon-setting" />
+    //     <span className="icon-user" />
+    //     <button className="logout-btn">Logout</button>
+    //   </div>
+    //   {menuOpen && <nav className="side-menu">{/* Menu content here */}</nav>}
+    // </header>
+    <Styled.Wrap>
+      <Styled.HeaderLeft>
         <button
           className="menu-toggle"
           onClick={() => setMenuOpen((open) => !open)}
@@ -17,7 +45,7 @@ export const Header = () => {
         </button>
         <span className="app-icon" />
         <img src="/logo.png" alt="Logo" className="logo" />
-      </div>
+      </Styled.HeaderLeft>
       <div className="header-center">
         <input
           type="text"
@@ -32,8 +60,7 @@ export const Header = () => {
         <span className="icon-user" />
         <button className="logout-btn">Logout</button>
       </div>
-      {menuOpen && <nav className="side-menu">{/* Menu content here */}</nav>}
-    </header>
+    </Styled.Wrap>
   )
 }
 
