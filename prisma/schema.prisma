@@ -1,0 +1,169 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // Hoặc "mysql", "mongodb", "sqlite" tùy theo database bạn sử dụng
+  url      = "file:./dev.db" // Đường dẫn tới file SQLite, hoặc chuỗi kết nối cho MySQL, PostgreSQL, MongoDB
+}
+
+/// Bảng User (Người dùng/Nhân viên)
+model User {
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  password    String // Cần hash mật khẩu trước khi lưu vào DB
+  fullName    String
+  email       String?  @unique // Email có thể null nếu không bắt buộc
+  phoneNumber String?  @unique // Số điện thoại có thể null nếu không bắt buộc
+  role        String   @default("Tư vấn viên") // Ví dụ: "Admin", "Tư vấn viên", "Marketing"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignedLeads       Lead[]        @relation("AssignedLeads") // Mối quan hệ 1-n với Lead
+  interactions        Interaction[] // Mối quan hệ 1-n với Interaction (người tạo tương tác)
+  createdAppointments Appointment[] // Mối quan hệ 1-n với Appointment (người tạo lịch hẹn)
+  sentMessages        Message[] // Mối quan hệ 1-n với Message (người gửi tin nhắn)
+
+  @@map("users") // Đặt tên bảng trong DB là 'users'
+}
+
+/// Bảng Lead (Khách hàng tiềm năng)
+model Lead {
+  id             Int       @id @default(autoincrement())
+  fullName       String
+  phoneNumber    String?   @unique // Số điện thoại có thể null, nhưng nên unique nếu có
+  email          String?   @unique // Email có thể null, nhưng nên unique nếu có
+  zaloId         String?
+  viberId        String?
+  whatsappId     String?
+  source         String? // Nguồn Lead (e.g., 'Web', 'Facebook', 'Zalo OA', 'Import Excel')
+  utmSource      String? // UTM Source (e.g., 'website', 'facebook', 'campaign_x')
+  status         String    @default("Mới") // e.g., 'Mới', 'Đang chăm sóc', 'Đã chốt', 'Không quan tâm', 'Đã chuyển đổi'
+  isCustomer     Boolean   @default(false) // True nếu đã chuyển đổi thành khách hàng
+  conversionDate DateTime? // Ngày chuyển đổi từ Lead sang Customer
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Mối quan hệ
+  assignedToUser   User? @relation("AssignedLeads", fields: [assignedToUserId], references: [id])
+  assignedToUserId Int? // Khóa ngoại tới User
+
+  preferredService   Service? @relation("LeadPreferredService", fields: [preferredServiceId], references: [id])
+  preferredServiceId Int? // Khóa ngoại tới Service
+
+  interactions Interaction[] // Mối quan hệ 1-n với Interaction
+  customer     Customer? // Mối quan hệ 1-1 với Customer (nếu Lead được chuyển đổi)
+
+  @@map("leads")
+}
+
+/// Bảng Customer (Khách hàng)
+model Customer {
+  id                  Int       @id @default(autoincrement())
+  leadId              Int       @unique // Mỗi khách hàng phải có một Lead gốc
+  customerCode        String?   @unique // Mã khách hàng (nếu có)
+  firstPurchaseDate   DateTime?
+  lastInteractionDate DateTime? // Ngày tương tác gần nhất với tư cách là khách hàng
+  status              String    @default("Đang hoạt động") // e.g., 'Đang hoạt động', 'Không hoạt động', 'VIP'
+  notes               String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  lead         Lead          @relation(fields: [leadId], references: [id])
+  interactions Interaction[] // Mối quan hệ 1-n với Interaction
+  appointments Appointment[] // Mối quan hệ 1-n với Appointment
+  messages     Message[] // Mối quan hệ 1-n với Message
+
+  @@map("customers")
+}
+
+/// Bảng Interaction (Tương tác)
+model Interaction {
+  id              Int      @id @default(autoincrement())
+  interactionType String // e.g., 'Chat Zalo', 'Gọi điện', 'SMS', 'Email', 'Gặp mặt', 'Follow Zalo OA'
+  channel         String? // e.g., 'Zalo', 'Viber', 'WhatsApp', 'Phone', 'Email', 'Trực tiếp'
+  interactionDate DateTime @default(now())
+  duration        Int? // Thời lượng tương tác (tính bằng giây)
+  content         String?
+  isNewCustomer   Boolean  @default(false) // True nếu là khách hàng mới đổ về từ MKT
+  isClosedDeal    Boolean  @default(false) // True nếu là chốt đơn "nóng" trong ngày
+  createdAt       DateTime @default(now())
+
+  // Mối quan hệ
+  lead   Lead? @relation(fields: [leadId], references: [id])
+  leadId Int? // FK tới Lead (có thể null nếu tương tác với Customer)
+
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId Int? // FK tới Customer (có thể null nếu tương tác với Lead)
+
+  initiatedByUser   User @relation(fields: [initiatedByUserId], references: [id])
+  initiatedByUserId Int // FK tới User (người tạo tương tác)
+
+  @@map("interactions")
+}
+
+/// Bảng Service (Dịch vụ)
+model Service {
+  id          Int      @id @default(autoincrement())
+  serviceName String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leads        Lead[]        @relation("LeadPreferredService") // Mối quan hệ 1-n với Lead (dịch vụ mong muốn)
+  appointments Appointment[] // Mối quan hệ 1-n với Appointment (dịch vụ của lịch hẹn)
+
+  @@map("services")
+}
+
+/// Bảng Appointment (Lịch hẹn)
+model Appointment {
+  id               Int       @id @default(autoincrement())
+  appointmentType  String // e.g., 'Tái khám', 'Rửa vết thương', 'Uống thuốc', 'Thoa sẹo', 'Nhắc lịch hậu phẫu'
+  appointmentDate  DateTime
+  location         String?
+  notes            String?
+  status           String    @default("Đã lên lịch") // e.g., 'Đã lên lịch', 'Đã xác nhận', 'Đã hoàn thành', 'Đã hủy'
+  actualReturnDate DateTime? // Ngày khách hàng thực tế quay lại tái khám
+  treatmentResult  String? // Kết quả quá trình điều trị (cho tái khám)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Mối quan hệ
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId Int // FK tới Customer
+
+  service   Service? @relation(fields: [serviceId], references: [id])
+  serviceId Int? // FK tới Service (dịch vụ liên quan đến lịch hẹn)
+
+  createdByUser   User @relation(fields: [createdByUserId], references: [id])
+  createdByUserId Int // FK tới User (người tạo lịch hẹn)
+
+  @@map("appointments")
+}
+
+/// Bảng Message (Tin nhắn)
+model Message {
+  id          Int      @id @default(autoincrement())
+  messageType String // e.g., 'Khuyến mãi', 'Cảm ơn', 'Nhắc lịch', 'Chăm sóc'
+  channel     String // e.g., 'Zalo OA', 'SMS', 'Email'
+  contentText String?
+  imageUrl    String?
+  videoUrl    String?
+  linkUrl     String?
+  sentAt      DateTime @default(now())
+  status      String   @default("Đã gửi") // e.g., 'Đã gửi', 'Thất bại', 'Đang chờ'
+  createdAt   DateTime @default(now())
+
+  // Mối quan hệ
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId Int // FK tới Customer
+
+  sentByUser   User @relation(fields: [sentByUserId], references: [id])
+  sentByUserId Int // FK tới User (người gửi tin nhắn)
+
+  @@map("messages")
+}
