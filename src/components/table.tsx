@@ -1,4 +1,5 @@
-import styled from "styled-components"
+"use client"
+import { styled } from "styled-components"
 
 type Column<T> = {
   key: string

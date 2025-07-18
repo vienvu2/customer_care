@@ -1,5 +1,7 @@
+"use client"
 import { Header } from "@/containers/header"
-import styled from "styled-components"
+import { SideBar } from "@/containers/sidebar"
+import { styled } from "styled-components"
 
 type Props = {
   children: React.ReactNode
@@ -14,8 +16,10 @@ export const Layout = ({ children, header, footer, sidebar }: Props) => {
     <Styled.Wrap>
       <Styled.Header>{header || <Header />}</Styled.Header>
       <Styled.Main>
-        {sidebar && <aside>{sidebar}</aside>}
-        <div>{children}</div>
+        <Styled.Sidebar>{sidebar || <SideBar />}</Styled.Sidebar>
+        <Styled.Content>
+          <div>{children}</div>
+        </Styled.Content>
       </Styled.Main>
       <Styled.Footer>Footer</Styled.Footer>
     </Styled.Wrap>
@@ -24,17 +28,31 @@ export const Layout = ({ children, header, footer, sidebar }: Props) => {
 
 const Styled = {
   Wrap: styled.div`
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
-    font-family: var(--font-geist-sans);
     color: #333;
   `,
   Header: styled.div``,
   Footer: styled.div``,
   Main: styled.main`
-    padding: 20px;
     background-color: #f9f9f9;
     min-height: calc(100vh - 100px); // Adjust based on header/footer height
+    display: flex;
+  `,
+
+  Sidebar: styled.div`
+    width: 250px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; // Prevent sidebar from shrinking
+  `,
+
+  Content: styled.div`
+    flex: 1; // Allow content to take remaining space
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-left: 20px; // Space between sidebar and content
   `,
 }

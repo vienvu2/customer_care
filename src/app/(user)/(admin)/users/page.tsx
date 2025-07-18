@@ -14,7 +14,7 @@ export default function Home() {
   }, [])
 
   return (
-    <Layout>
+    <div>
       <h2>Customer Care System</h2>
 
       <Button
@@ -78,6 +78,6 @@ export default function Home() {
           />
         </div>
       )}
-    </Layout>
+    </div>
   )
 }
