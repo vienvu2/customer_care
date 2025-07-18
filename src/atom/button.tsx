@@ -1,9 +1,13 @@
 import styled from "styled-components"
 
-export const Button = () => {
+type Props = { onClick?: () => void; children?: React.ReactNode }
+
+export const Button = ({ onClick, children }: Props) => {
   return (
     <Styled.Wrap>
-      <Styled.Button>Click Me</Styled.Button>
+      <Styled.Button onClick={onClick} type="button">
+        {children}
+      </Styled.Button>
     </Styled.Wrap>
   )
 }
@@ -13,7 +17,6 @@ const Styled = {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
   `,
   Button: styled.button`
     padding: 10px 20px;

@@ -3,6 +3,8 @@
 import { useEffect } from "react"
 import useList from "@/hook/user"
 import { Layout } from "@/components/wrap"
+import { Table } from "@/components/table"
+import { Button } from "@/atom/button"
 
 export default function Home() {
   const { fetchUsers, createUser, users, loading } = useList()
@@ -15,7 +17,7 @@ export default function Home() {
     <Layout>
       <h2>Customer Care System</h2>
 
-      <button
+      <Button
         onClick={() =>
           createUser({
             fullName: "Test User",
@@ -28,19 +30,52 @@ export default function Home() {
         }
       >
         Add Test User
-      </button>
+      </Button>
       {loading ? (
         <p>Loading users...</p>
       ) : (
         <div>
           <h3>Users ({users.length})</h3>
-          <ul>
+          {/* <ul>
             {users.map((user, idx) => (
               <li key={user.id + "" + idx}>
                 {user.fullName} - {user.email}
               </li>
             ))}
-          </ul>
+          </ul> */}
+          <Table
+            list={users}
+            columns={[
+              {
+                key: "id",
+                label: "ID",
+                width: "50px",
+                align: "left",
+                render: (user) => user.id,
+              },
+              {
+                key: "fullName",
+                label: "Full Name",
+                width: "200px",
+                align: "left",
+                render: (user) => user.fullName,
+              },
+              {
+                key: "email",
+                label: "Email",
+                width: "250px",
+                align: "left",
+                render: (user) => user.email,
+              },
+              {
+                key: "phoneNumber",
+                label: "Phone Number",
+                width: "150px",
+                align: "left",
+                render: (user) => user.phoneNumber,
+              },
+            ]}
+          />
         </div>
       )}
     </Layout>
