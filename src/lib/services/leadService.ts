@@ -60,6 +60,21 @@ export class LeadService {
         }
     }
 
+    static async createMany (
+        leads: LeadCreateDTO[]
+    ): Promise<Lead[]> {
+        try {
+            const r = await prisma.lead.createMany({
+                data: leads,
+                skipDuplicates: true // Skip duplicates based on unique constraints
+            })
+            return r as unknown as Lead[];
+        } catch (error) {
+            console.error('Error creating multiple users:', error)
+            throw error
+        }
+    }
+
     static async update (
         id: number,
         data: Partial<LeadCreateDTO>

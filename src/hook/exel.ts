@@ -116,6 +116,7 @@ export const useExcel = <T,> () => {
     // Tạo template Excel
     const downloadTemplate = async (
         columns: ExcelColumn[],
+        list: [] = [],
         filename: string = 'template.xlsx'
     ) => {
         const wb = XLSX.utils.book_new()
@@ -129,6 +130,14 @@ export const useExcel = <T,> () => {
             wch: col.width || 20
         }))
         ws['!cols'] = colWidths
+
+        // Nếu có dữ liệu mẫu, thêm vào worksheet
+        if (list.length > 0) {
+            const rows = list.map(item =>
+                columns.map(col => (item as never)[col.key] || '')
+            )
+            XLSX.utils.sheet_add_aoa(ws, rows, { origin: -1 })
+        }
 
         XLSX.utils.book_append_sheet(wb, ws, 'Template')
         XLSX.writeFile(wb, filename)

@@ -5,6 +5,7 @@ import { Flex, FormStyled, DetailPage } from "@/components/style"
 import { Table } from "@/components/table"
 import { ListPage } from "@/containers/wrap"
 import useCreate from "@/hook/create"
+import { useExcel } from "@/hook/exel"
 import useList from "@/hook/list"
 import { colors } from "@/store/theme"
 import { Lead } from "@prisma/client"
@@ -380,11 +381,8 @@ const LeadDetail = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
 }
 
 const LeadImport = ({ onClose }: { onClose?: () => void }) => {
-  const downloadTemplate = () => {
-    console.log("Downloading template")
-    // Implement the download template logic here
-  }
-  // Implement the import functionality here
+  const { downloadTemplate, importFromExcel } = useExcel<Partial<Lead>>()
+  const { createMany } = useCreate<Partial<Lead>>("leads")
   return (
     <FormStyled.Wrap>
       <FormStyled.Title>
@@ -406,6 +404,33 @@ const LeadImport = ({ onClose }: { onClose?: () => void }) => {
         type="secondary"
         onClick={() => {
           // Handle download template logic here
+          const sampleData: Partial<Lead>[] = []
+          for (let i = 0; i < 1000; i++) {
+            sampleData.push({
+              fullName: `Nguyễn Văn A ${i + 1}`,
+              email: `nguyenvana-${i + 1}` + "@example.com",
+              phoneNumber: `012345678${i}`,
+              source: "website",
+              zaloId: `zalo-id-${i + 1}`,
+              viberId: `viber-id-${i + 1}`,
+              whatsappId: `whatsapp-id-${i + 1}`,
+              notes: `Ghi chú mẫu ${i + 1}`,
+            })
+          }
+          downloadTemplate(
+            [
+              { key: "fullName", label: "Họ và tên", width: 30 },
+              { key: "email", label: "Email", width: 30 },
+              { key: "phoneNumber", label: "Số điện thoại", width: 20 },
+              { key: "source", label: "Nguồn khách hàng", width: 20 },
+              { key: "zaloId", label: "Zalo ID (nếu có)", width: 20 },
+              { key: "viberId", label: "Viber ID (nếu có)", width: 20 },
+              { key: "whatsappId", label: "WhatsApp ID (nếu có)", width: 20 },
+              { key: "notes", label: "Ghi chú", width: 50 },
+            ],
+            sampleData as [],
+            "leads_template.xlsx"
+          )
           console.log("Download template")
         }}
       >
@@ -421,8 +446,49 @@ const LeadImport = ({ onClose }: { onClose?: () => void }) => {
         type="primary"
         onClick={() => {
           // Handle import logic here
+          const fileInput = document.querySelector(
+            'input[type="file"]'
+          ) as HTMLInputElement
+          if (!fileInput.files || fileInput.files.length === 0) {
+            toast("Vui lòng chọn tệp để nhập", {
+              type: "warning",
+              autoClose: 5000,
+            })
+            return
+          }
+          const file = fileInput.files[0]
+          importFromExcel(file, [
+            { key: "fullName", label: "Họ và tên", width: 30 },
+            { key: "email", label: "Email", width: 30 },
+            { key: "phoneNumber", label: "Số điện thoại", width: 20 },
+            { key: "source", label: "Nguồn khách hàng", width: 20 },
+            { key: "zaloId", label: "Zalo ID (nếu có)", width: 20 },
+            { key: "viberId", label: "Viber ID (nếu có)", width: 20 },
+            { key: "whatsappId", label: "WhatsApp ID (nếu có)", width: 20 },
+            { key: "notes", label: "Ghi chú", width: 50 },
+          ]).then(
+            (data) => {
+              console.log("Imported data:", data)
+              createMany(data, () => {
+                toast("Nhập dữ liệu thành công", {
+                  type: "success",
+                  autoClose: 5000,
+                })
+                if (onClose) onClose()
+
+                console.log("Leads imported successfully")
+              })
+            },
+            (error) => {
+              console.error("Error importing data:", error)
+              toast("Lỗi khi nhập dữ liệu", {
+                type: "error",
+                autoClose: 5000,
+              })
+            }
+          )
           console.log("Import leads")
-          if (onClose) onClose()
+          // if (onClose) onClose()
         }}
       >
         Nhập dữ liệu
