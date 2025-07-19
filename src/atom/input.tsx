@@ -24,9 +24,6 @@ export const Input = (props: Props) => {
   return (
     <Styled.Wrap size={size}>
       {label ? <Styled.Label>{props.label}</Styled.Label> : null}
-      {/* {props.leftIcon && (
-        <span className="icon left-icon">{props.leftIcon}</span>
-      )} */}
       <Styled.Input
         value={value}
         placeholder={placeholder || "Search..."}
@@ -36,9 +33,6 @@ export const Input = (props: Props) => {
         is_left={props.leftIcon ? "true" : "false"}
         is_right={props.rightIcon ? "true" : "false"}
       />
-      {/* {props.rightIcon && (
-        <span className="icon right-icon">{props.rightIcon}</span>
-      )} */}
     </Styled.Wrap>
   )
 }

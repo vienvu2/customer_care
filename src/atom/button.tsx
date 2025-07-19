@@ -6,7 +6,7 @@ type Props = {
   children?: React.ReactNode
   leftIcon?: React.ReactNode
   rightIcon?: React.ReactNode
-  type?: "primary" | "secondary" | "danger" | "success" | "warning"
+  type?: "primary" | "secondary" | "danger" | "success" | "warning" | "light"
   outline?: boolean
   size?: "small" | "medium" | "large"
   disabled?: boolean
@@ -72,6 +72,10 @@ const Styled = {
     }
     &.b-warning {
       background-color: ${colors.warning};
+      color: black;
+    }
+    &.b-light {
+      background-color: transparent;
       color: black;
     }
 

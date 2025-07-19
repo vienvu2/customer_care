@@ -62,3 +62,41 @@ export const Styled = {
     }
   `,
 }
+
+export const FormStyled = {
+  Title: styled.h2`
+    font-size: 18px;
+    margin-bottom: 16px;
+    font-weight: bold;
+    color: ${colors.textPrimary};
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  `,
+  Wrap: styled.div`
+    padding: 12px;
+    margin-top: 12px;
+  `,
+  Group: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  `,
+  Label: styled.label`
+    font-size: 14px;
+    color: ${colors.textPrimary};
+    display: block;
+    margin-bottom: 4px;
+  `,
+  Input: styled.input`
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid ${colors.borderPrimary};
+    background-color: ${colors.bgPrimary};
+    color: ${colors.textPrimary};
+  `,
+
+  Item: styled.div`
+    margin-bottom: 12px;
+  `,
+}

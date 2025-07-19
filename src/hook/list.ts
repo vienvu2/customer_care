@@ -26,29 +26,13 @@ const useList = <T> (source: string) => {
         }
     }
 
-    const create = async (data: UserCreate) => {
-        try {
-            const response = await axios.post("/api/users", {
-                body: JSON.stringify(data),
-            })
 
-            const result: ApiResponse<T> = response.data
-            if (result.success && result.data !== undefined) {
-                setList((prev) => [result.data as T, ...prev])
-            }
-            return result
-
-        } catch (error) {
-            console.error("Failed to create user:", error)
-        }
-    }
     useEffect(() => {
         fetch()
     }, [])
 
     return {
         fetch,
-        create,
         list,
         loading,
         total,
