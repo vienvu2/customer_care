@@ -1,10 +1,12 @@
 import type { Metadata } from "next"
-import { PT_Sans } from "next/font/google"
+import { Mona_Sans } from "next/font/google"
 import { Layout } from "@/containers/wrap"
 import "./main.scss"
-export const ptSan = PT_Sans({
-  weight: "400",
+export const font = Mona_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 })
+
 
 export const metadata: Metadata = {
   title: "Customer Care",
@@ -19,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${ptSan.className}  `}>
+      <body className={`${font.className}`}>
         <Layout>{children}</Layout>
       </body>
     </html>

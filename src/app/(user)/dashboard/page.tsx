@@ -1,11 +1,10 @@
 "use client"
 import { Styled, Row, Col } from "@/components/style"
+import { ListPage } from "@/containers/wrap"
 
 const DashboardPage = () => {
   return (
-    <Styled.Wrap>
-      <Styled.Title>Theo Dõi Khách Hàng </Styled.Title>
-
+    <ListPage title="Theo Dõi Khách Hàng ">
       <Row>
         <Col span={6}>
           <Styled.Box>
@@ -59,7 +58,7 @@ const DashboardPage = () => {
         và phân tích từ hệ thống. Bạn có thể xuất báo cáo chi tiết dưới dạng
         file PDF bất cứ lúc nào.
       </div>
-    </Styled.Wrap>
+    </ListPage>
   )
 }
 

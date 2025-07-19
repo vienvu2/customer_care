@@ -4,10 +4,11 @@ import styled from "styled-components"
 export const Row = styled.div`
   display: flex;
   flex-wrap: wrap;
+  margin: 0 -12px;
 `
 export const Col = styled.div<{ span?: number }>`
   width: ${(props) => (props.span || 12) * (100 / 12)}%;
-  padding: 0 10px;
+  padding: 0 12px;
 `
 
 export const Styled = {
@@ -25,12 +26,14 @@ export const Styled = {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 24px;
+    padding-top: 16px;
   `,
 
   HeaderActions: styled.div`
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   `,
 
   Box: styled.div`
@@ -38,7 +41,7 @@ export const Styled = {
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 
     h3 {
       margin-bottom: 12px;
