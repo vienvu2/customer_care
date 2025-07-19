@@ -1,4 +1,4 @@
-import { LeadService } from '@/lib/services/leadService';
+import { InteractionService } from '@/lib/services/interactionService';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET (request: NextRequest) {
@@ -6,7 +6,7 @@ export async function GET (request: NextRequest) {
         const page = request.nextUrl.searchParams.get('page') || '1';
         const limit = request.nextUrl.searchParams.get('limit') || '10';
         console.log('Fetching leads with pagination2:', { page, limit });
-        const { data, total } = await LeadService.getList(
+        const { data, total } = await InteractionService.getList(
             parseInt(page, 10),
             parseInt(limit, 10)
         );
@@ -28,7 +28,7 @@ export async function POST (request: NextRequest) {
         const body = await request.json();
 
         // Logic tạo user mới
-        const createdUser = await LeadService.create({
+        const createdUser = await InteractionService.create({
             ...body,
         });
 

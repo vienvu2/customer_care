@@ -1,13 +1,32 @@
 "use client"
+import { Button } from "@/atom/button"
 import { Table } from "@/components/table"
 import { Layout, ListPage } from "@/containers/wrap"
+import useList from "@/hook/list"
 import { Interaction, Lead } from "@prisma/client"
+import { MessageCirclePlus } from "lucide-react"
 
 const InteractionPage = () => {
+  const { list, loading, fetch } = useList<Interaction>("interactions")
   return (
-    <ListPage>
+    <ListPage
+      title="Quản Lý Tương Tác"
+      actions={[
+        <Button
+          key="add-interaction"
+          type="primary"
+          onClick={() => {
+            // Logic to add a new interaction
+            console.log("Add new interaction")
+          }}
+        >
+          <MessageCirclePlus size={20} />
+          Thêm Tương Tác
+        </Button>,
+      ]}
+    >
       <Table<Interaction>
-        list={[]}
+        list={list}
         columns={[
           {
             key: "interactionType",
