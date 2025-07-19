@@ -118,7 +118,7 @@ const Styled = {
       }
     }
     &.b-block {
-      display: block;
+      display: flex;
       width: 100%;
     }
   `,

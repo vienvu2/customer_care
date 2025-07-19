@@ -16,7 +16,7 @@ import { toast } from "react-toastify"
 const LeadPage = () => {
   const { list, fetch } = useList<Lead>("leads")
 
-  const [leadDetail, setDetail] = useState<Lead | null>(null)
+  const [leadDetail, setDetail] = useState<Lead | undefined>()
   const [mode, setMode] = useState<"" | "view" | "create" | "import">("")
 
   const renderDetail = () => {
@@ -46,7 +46,7 @@ const LeadPage = () => {
         <LeadDetail
           lead={leadDetail}
           onClose={() => {
-            setDetail(null)
+            setDetail(undefined)
           }}
         />
       )
@@ -136,9 +136,20 @@ const LeadPage = () => {
             render: (lead) => (
               <Flex>
                 <Button
+                  type="primary"
+                  size="small"
+                  onClick={() => {
+                    setMode("view")
+                    setDetail(lead)
+                  }}
+                >
+                  <Icon.Eye size={14} />
+                </Button>
+                <Button
                   type="secondary"
                   size="small"
                   onClick={() => {
+                    setMode("create")
                     setDetail(lead)
                   }}
                 >
@@ -167,13 +178,7 @@ const LeadPage = () => {
 export default LeadPage
 
 const LeadForm = ({ onClose, data }: { onClose?: () => void; data?: Lead }) => {
-  const {
-    register,
-    handleSubmit,
-    validate,
-    setValue,
-    formState: { errors },
-  } = useForm<Partial<Lead>>()
+  const { register, handleSubmit, setValue } = useForm<Partial<Lead>>()
 
   useEffect(() => {
     if (data) {
@@ -375,6 +380,10 @@ const LeadDetail = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
 }
 
 const LeadImport = ({ onClose }: { onClose?: () => void }) => {
+  const downloadTemplate = () => {
+    console.log("Downloading template")
+    // Implement the download template logic here
+  }
   // Implement the import functionality here
   return (
     <FormStyled.Wrap>
@@ -392,7 +401,32 @@ const LeadImport = ({ onClose }: { onClose?: () => void }) => {
         </Button>
       </FormStyled.Title>
       {/* Add your import form or file upload component here */}
-      <p>Chức năng nhập khách hàng sẽ được triển khai sau.</p>
+      <Button
+        block={true}
+        type="secondary"
+        onClick={() => {
+          // Handle download template logic here
+          console.log("Download template")
+        }}
+      >
+        <Icon.Download size={20} />
+        Tải mẫu nhập
+      </Button>
+      <div style={{ padding: 120 }}>
+        <input type="file" accept=".csv, .xlsx" />
+      </div>
+
+      <Button
+        block={true}
+        type="primary"
+        onClick={() => {
+          // Handle import logic here
+          console.log("Import leads")
+          if (onClose) onClose()
+        }}
+      >
+        Nhập dữ liệu
+      </Button>
     </FormStyled.Wrap>
   )
 }

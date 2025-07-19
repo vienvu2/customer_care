@@ -113,7 +113,7 @@ export const DetailPage = {
     color: ${colors.textPrimary};
   `,
   Title: styled.h2`
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
     margin-bottom: 16px;
     display: flex;
