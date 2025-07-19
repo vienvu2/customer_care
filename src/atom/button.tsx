@@ -41,6 +41,10 @@ const Styled = {
     border-radius: 5px;
     font-family: inherit;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
 
     &:hover {
       background-color: #005bb5;

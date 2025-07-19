@@ -19,6 +19,19 @@ export const Styled = {
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
+    flex: 1;
+  `,
+  Header: styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  `,
+
+  HeaderActions: styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
   `,
 
   Box: styled.div`

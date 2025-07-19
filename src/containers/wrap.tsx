@@ -62,10 +62,10 @@ export const Layout = ({ children, header, footer, sidebar }: Props) => {
 
 export const Content = ({
   children,
-  rightsidebar,
+  detail,
 }: {
   children: React.ReactNode
-  rightsidebar?: React.ReactNode
+  detail?: React.ReactNode
 }) => {
   const { leftWidth, rightWidth } = useUIStore()
   return (
@@ -74,33 +74,40 @@ export const Content = ({
         <Styled.Content>
           <div>{children}</div>
         </Styled.Content>
-        <Styled.ResizeLine
-          style={{
-            borderRight: `1px solid ${colors.borderPrimary}`,
-          }}
-          onMouseDown={(e) => {
-            const startX = e.clientX
-            const startWidth = rightWidth ?? 250
+        {detail && (
+          <>
+            <Styled.ResizeLine
+              style={{
+                borderRight: `1px solid ${colors.borderPrimary}`,
+              }}
+              onMouseDown={(e) => {
+                const startX = e.clientX
+                const startWidth = rightWidth ?? 250
 
-            const min = 200 // Minimum width for the left sidebar
-            const max = 600 // Maximum width for the left sidebar
+                const min = 200 // Minimum width for the left sidebar
+                const max = 900 // Maximum width for the left sidebar
 
-            const onMouseMove = (moveEvent: MouseEvent) => {
-              const newWidth = startWidth - (moveEvent.clientX - startX)
-              if (newWidth < min || newWidth > max) return
+                const onMouseMove = (moveEvent: MouseEvent) => {
+                  const newWidth = startWidth - (moveEvent.clientX - startX)
+                  if (newWidth < min || newWidth > max) return
 
-              useUIStore.getState().setRightWidth(newWidth)
-            }
+                  useUIStore.getState().setRightWidth(newWidth)
+                }
 
-            const onMouseUp = () => {
-              document.removeEventListener("mousemove", onMouseMove)
-              document.removeEventListener("mouseup", onMouseUp)
-            }
+                const onMouseUp = () => {
+                  document.removeEventListener("mousemove", onMouseMove)
+                  document.removeEventListener("mouseup", onMouseUp)
+                }
 
-            document.addEventListener("mousemove", onMouseMove)
-            document.addEventListener("mouseup", onMouseUp)
-          }}
-        />
+                document.addEventListener("mousemove", onMouseMove)
+                document.addEventListener("mouseup", onMouseUp)
+              }}
+            />
+            <Styled.RightSidebar style={{ width: rightWidth || "250px" }}>
+              {detail}
+            </Styled.RightSidebar>
+          </>
+        )}
       </Styled.Center>
     </>
   )
