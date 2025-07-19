@@ -1,4 +1,5 @@
 "use client"
+import { colors } from "@/store/theme"
 import { styled } from "styled-components"
 
 type Column<T> = {
@@ -52,19 +53,18 @@ const Styled = styled.table`
   th,
   td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid ${colors.borderPrimary};
     text-align: left;
   }
 
   th {
-    background-color: #f4f4f4;
+    background-color: ${colors.bgSecondary};
   }
 
   tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: ${colors.bgPrimary};
   }
 
   tr:hover {
-    background-color: #f1f1f1;
   }
 `

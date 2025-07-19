@@ -5,6 +5,7 @@ import { styled } from "styled-components"
 import { Footer } from "./footer"
 import { RightSide } from "./rightSide"
 import { useUIStore } from "@/store/ui"
+import { colors } from "@/store/theme"
 
 type Props = {
   children: React.ReactNode
@@ -12,33 +13,96 @@ type Props = {
   footer?: React.ReactNode
   main?: React.ReactNode
   sidebar?: React.ReactNode
-  rightsidebar?: React.ReactNode
 }
 
-export const Layout = ({
-  children,
-  header,
-  footer,
-  sidebar,
-  rightsidebar,
-}: Props) => {
+export const Layout = ({ children, header, footer, sidebar }: Props) => {
   const { sidebarOpen } = useUIStore()
+  const { leftWidth, rightWidth } = useUIStore()
   return (
     <Styled.Wrap>
       <Styled.Header>{header || <Header />}</Styled.Header>
       <Styled.Main>
         {sidebarOpen && (
-          <Styled.Sidebar>{sidebar || <SideBar />}</Styled.Sidebar>
+          <Styled.Sidebar style={{ width: leftWidth || "250px" }}>
+            {sidebar || <SideBar />}
+          </Styled.Sidebar>
         )}
+        <Styled.ResizeLine
+          style={{
+            borderRight: `1px solid ${colors.borderPrimary}`,
+          }}
+          onMouseDown={(e) => {
+            const startX = e.clientX
+            const startWidth = leftWidth ?? 250
+
+            const min = 200 // Minimum width for the left sidebar
+            const max = 600 // Maximum width for the left sidebar
+
+            const onMouseMove = (moveEvent: MouseEvent) => {
+              const newWidth = startWidth + (moveEvent.clientX - startX)
+              if (newWidth < min || newWidth > max) return
+
+              useUIStore.getState().setLeftWidth(newWidth)
+            }
+
+            const onMouseUp = () => {
+              document.removeEventListener("mousemove", onMouseMove)
+              document.removeEventListener("mouseup", onMouseUp)
+            }
+
+            document.addEventListener("mousemove", onMouseMove)
+            document.addEventListener("mouseup", onMouseUp)
+          }}
+        />
+        <Styled.Center>{children}</Styled.Center>
+      </Styled.Main>
+    </Styled.Wrap>
+  )
+}
+
+export const Content = ({
+  children,
+  rightsidebar,
+}: {
+  children: React.ReactNode
+  rightsidebar?: React.ReactNode
+}) => {
+  const { leftWidth, rightWidth } = useUIStore()
+  return (
+    <>
+      <Styled.Center>
         <Styled.Content>
           <div>{children}</div>
         </Styled.Content>
-        <Styled.RightSidebar>
-          {rightsidebar || <RightSide />}
-        </Styled.RightSidebar>
-      </Styled.Main>
-      <Styled.Footer>{footer || <Footer />}</Styled.Footer>
-    </Styled.Wrap>
+        <Styled.ResizeLine
+          style={{
+            borderRight: `1px solid ${colors.borderPrimary}`,
+          }}
+          onMouseDown={(e) => {
+            const startX = e.clientX
+            const startWidth = rightWidth ?? 250
+
+            const min = 200 // Minimum width for the left sidebar
+            const max = 600 // Maximum width for the left sidebar
+
+            const onMouseMove = (moveEvent: MouseEvent) => {
+              const newWidth = startWidth - (moveEvent.clientX - startX)
+              if (newWidth < min || newWidth > max) return
+
+              useUIStore.getState().setRightWidth(newWidth)
+            }
+
+            const onMouseUp = () => {
+              document.removeEventListener("mousemove", onMouseMove)
+              document.removeEventListener("mouseup", onMouseUp)
+            }
+
+            document.addEventListener("mousemove", onMouseMove)
+            document.addEventListener("mouseup", onMouseUp)
+          }}
+        />
+      </Styled.Center>
+    </>
   )
 }
 
@@ -46,37 +110,42 @@ const Styled = {
   Wrap: styled.div`
     min-height: 100vh;
     color: #333;
-    background-color: #f4f4f4;
+    background-color: ${colors.bgPrimary};
   `,
   Header: styled.div``,
   Footer: styled.div``,
   Main: styled.main`
-    background-color: #f9f9f9;
-    min-height: calc(100vh - 100px); // Adjust based on header/footer height
+    background-color: ${colors.bgPrimary};
+    min-height: calc(100vh - 50px); // Adjust based on header/footer height
     display: flex;
   `,
+  Center: styled.div`
+    display: flex;
+    flex: 1; // Allow content to take remaining space
+    position: relative;
+    width: 100%;
+  `,
 
+  ResizeLine: styled.div`
+    width: 5px;
+    background-color: ${colors.borderPrimary};
+    cursor: ew-resize;
+    position: relative;
+    z-index: 10;
+  `,
   Sidebar: styled.div`
-    width: 250px;
-    background-color: #f4f4f4;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0; // Prevent sidebar from shrinking
+    background-color: ${colors.bgPrimary};
+    border-right: 1px solid ${colors.borderPrimary};
   `,
   RightSidebar: styled.div`
     width: 250px;
-    background-color: #f4f4f4;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0; // Prevent right sidebar from shrinking
+    background-color: ${colors.bgPrimary};
+    border-left: 1px solid ${colors.borderPrimary};
   `,
 
   Content: styled.div`
     flex: 1; // Allow content to take remaining space
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    margin-left: 20px; // Space between sidebar and content
+    background-color: ${colors.bgPrimary};
+    width: calc(100% - 500px); // Adjust based on sidebar widths
   `,
 }

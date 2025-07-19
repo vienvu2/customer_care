@@ -21,21 +21,21 @@ export const Input = (props: Props) => {
 
   return (
     <Styled.Wrap size={size}>
-      {props.leftIcon && (
+      {/* {props.leftIcon && (
         <span className="icon left-icon">{props.leftIcon}</span>
-      )}
+      )} */}
       <Styled.Input
         value={value}
         placeholder={placeholder || "Search..."}
         onChange={onChange}
         disabled={props.disable}
         size={size}
-        hasLeftIcon={!!props.leftIcon}
-        hasRightIcon={!!props.rightIcon}
+        is_left={props.leftIcon ? "true" : "false"}
+        is_right={props.rightIcon ? "true" : "false"}
       />
-      {props.rightIcon && (
+      {/* {props.rightIcon && (
         <span className="icon right-icon">{props.rightIcon}</span>
-      )}
+      )} */}
     </Styled.Wrap>
   )
 }
@@ -88,8 +88,8 @@ const Styled = {
 
   Input: styled.input<{
     size: Props["size"]
-    hasLeftIcon: boolean
-    hasRightIcon: boolean
+    is_left: string
+    is_right: string
   }>`
     width: 100%;
     border: 1px solid ${colors.borderPrimary};
@@ -100,11 +100,11 @@ const Styled = {
     height: ${(props) => getSizeStyles(props.size).height};
     padding: ${(props) => getSizeStyles(props.size).padding};
     padding-left: ${(props) =>
-      props.hasLeftIcon
+      props.is_left == "true"
         ? "40px"
         : getSizeStyles(props.size).padding.split(" ")[1]};
     padding-right: ${(props) =>
-      props.hasRightIcon
+      props.is_right == "true"
         ? "40px"
         : getSizeStyles(props.size).padding.split(" ")[1]};
 

@@ -1,8 +1,12 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 interface UIState {
     sidebarOpen: boolean
     theme: 'light' | 'dark'
+
+    leftWidth?: number
+    rightWidth?: number
     notifications: Array<{
         id: string
         type: 'success' | 'error' | 'warning' | 'info'
@@ -25,73 +29,86 @@ interface UIState {
     openModal: (modal: keyof UIState['modals']) => void
     closeModal: (modal: keyof UIState['modals']) => void
     closeAllModals: () => void
+    setLeftWidth: (width: number) => void
+    setRightWidth: (width: number) => void
 }
 
-export const useUIStore = create<UIState>((set, get) => ({
-    sidebarOpen: true,
-    theme: 'dark',
-    notifications: [],
-    modals: {
-        createTicket: false,
-        editUser: false,
-        confirmDelete: false,
-    },
+export const useUIStore = create<UIState>()(
+    persist(
+        (set, get) => ({
+            sidebarOpen: true,
+            theme: 'dark',
+            notifications: [],
+            modals: {
+                createTicket: false,
+                editUser: false,
+                confirmDelete: false,
+            },
+            leftWidth: 250, // Default width for left sidebar
+            rightWidth: 250, // Default width for right sidebar
 
-    toggleSidebar: () => set((state) => ({
-        sidebarOpen: !state.sidebarOpen
-    })),
+            toggleSidebar: () => set((state) => ({
+                sidebarOpen: !state.sidebarOpen
+            })),
 
-    setSidebarOpen: (open) => set({ sidebarOpen: open }),
+            setLeftWidth: (width) => set({ leftWidth: width }),
+            setRightWidth: (width) => set({ rightWidth: width }),
 
-    toggleTheme: () => {
-        const newTheme = get().theme === 'light' ? 'dark' : 'light'
+            setSidebarOpen: (open) => set({ sidebarOpen: open }),
 
-        // Tự động update CSS attribute
-        if (typeof window !== 'undefined') {
-            document.documentElement.setAttribute('data-theme', newTheme)
-        }
+            toggleTheme: () => {
+                const newTheme = get().theme === 'light' ? 'dark' : 'light'
 
-        set({ theme: newTheme })
-    },
+                // Tự động update CSS attribute
+                if (typeof window !== 'undefined') {
+                    document.documentElement.setAttribute('data-theme', newTheme)
+                }
 
-    setTheme: (theme) => {
-        // Tự động update CSS attribute
-        if (typeof window !== 'undefined') {
-            document.documentElement.setAttribute('data-theme', theme)
-        }
+                set({ theme: newTheme })
+            },
 
-        set({ theme })
-    },
+            setTheme: (theme) => {
+                // Tự động update CSS attribute
+                if (typeof window !== 'undefined') {
+                    document.documentElement.setAttribute('data-theme', theme)
+                }
+
+                set({ theme })
+            },
 
 
-    addNotification: (notification) => set((state) => ({
-        notifications: [
-            ...state.notifications,
-            {
-                ...notification,
-                id: Date.now().toString(),
-                timestamp: Date.now(),
-            }
-        ]
-    })),
+            addNotification: (notification) => set((state) => ({
+                notifications: [
+                    ...state.notifications,
+                    {
+                        ...notification,
+                        id: Date.now().toString(),
+                        timestamp: Date.now(),
+                    }
+                ]
+            })),
 
-    removeNotification: (id) => set((state) => ({
-        notifications: state.notifications.filter(n => n.id !== id)
-    })),
+            removeNotification: (id) => set((state) => ({
+                notifications: state.notifications.filter(n => n.id !== id)
+            })),
 
-    openModal: (modal) => set((state) => ({
-        modals: { ...state.modals, [modal]: true }
-    })),
+            openModal: (modal) => set((state) => ({
+                modals: { ...state.modals, [modal]: true }
+            })),
 
-    closeModal: (modal) => set((state) => ({
-        modals: { ...state.modals, [modal]: false }
-    })),
+            closeModal: (modal) => set((state) => ({
+                modals: { ...state.modals, [modal]: false }
+            })),
 
-    closeAllModals: () => set({
-        modals: {
-            createTicket: false,
-            editUser: false,
-            confirmDelete: false,
-        }
-    }),
-}))
+            closeAllModals: () => set({
+                modals: {
+                    createTicket: false,
+                    editUser: false,
+                    confirmDelete: false,
+                }
+            }),
+        })
+        , {
+            name: 'ui-storage', // Unique name for the storage
+        })
+)

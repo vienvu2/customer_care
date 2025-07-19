@@ -3,25 +3,26 @@ import { Button } from "@/atom/button"
 import { Input } from "@/atom/input"
 import { ThemeToggle } from "@/atom/theme-toggle"
 import { colors } from "@/store/theme"
+import { useUIStore } from "@/store/ui"
 import { Bell, PanelRightClose, PanelRightOpen } from "lucide-react"
 import { useState } from "react"
 import { styled } from "styled-components"
 
 export const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const { sidebarOpen, setSidebarOpen } = useUIStore()
   return (
     <Styled.Wrap>
       <Styled.Left>
         <Styled.MenuToggle>
-          {menuOpen ? (
+          {sidebarOpen ? (
             <PanelRightClose
               color={colors.textPrimary}
-              onClick={() => setMenuOpen(false)}
+              onClick={() => setSidebarOpen(false)}
             />
           ) : (
             <PanelRightOpen
               color={colors.textPrimary}
-              onClick={() => setMenuOpen(true)}
+              onClick={() => setSidebarOpen(true)}
             />
           )}
         </Styled.MenuToggle>
@@ -54,7 +55,7 @@ const Styled = {
     align-items: center;
     padding: 10px 20px;
     background-color: ${colors.bgPrimary};
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid ${colors.borderPrimary};
   `,
   MenuToggle: styled.button`
     background: none;

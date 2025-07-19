@@ -1,13 +1,17 @@
-'use client'
+"use client"
+import { Styled } from "@/components/style"
 import { Table } from "@/components/table"
 import { Layout } from "@/containers/wrap"
+import useList from "@/hook/list"
 import { Lead } from "@prisma/client"
 
 const LeadPage = () => {
+  const { list } = useList<Lead>("leads")
   return (
-    <div>
+    <Styled.Wrap>
+      <Styled.Title>Quản Lý Khách Hàng</Styled.Title>
       <Table<Lead>
-        list={[]}
+        list={list}
         columns={[
           {
             key: "id",
@@ -32,7 +36,7 @@ const LeadPage = () => {
           },
         ]}
       />
-    </div>
+    </Styled.Wrap>
   )
 }
 
