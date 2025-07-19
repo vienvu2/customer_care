@@ -13,7 +13,7 @@ type Props = {
 export const Modal = (props: Props) => {
   return (
     <Styled.Wrap style={{ display: props.isOpen ? "flex" : "none" }}>
-      <Styled.Content style={{ width: props.width || 600 }}>
+      <Styled.Content style={{ minWidth: props.width || 600 }}>
         <Styled.CloseButton
           onClick={() => {
             props.onClose()

@@ -3,6 +3,7 @@ import { Button } from "@/atom/button"
 import { Input } from "@/atom/input"
 import Tooltip from "@/atom/tooltip"
 import { FormData, RowInput } from "@/components/form"
+import { Modal } from "@/components/modal"
 import { Paging } from "@/components/paging"
 import { Flex, FormStyled, DetailPage } from "@/components/style"
 import { Table } from "@/components/table"
@@ -36,6 +37,8 @@ const LeadPage = () => {
   >("")
 
   const [s, setS] = useState("")
+
+  const [idDelete, setIdDelete] = useState<number | null>(null)
 
   const renderDetail = () => {
     if (mode == "activity") {
@@ -76,6 +79,14 @@ const LeadPage = () => {
           lead={leadDetail}
           onClose={() => {
             setDetail(undefined)
+            setMode("")
+          }}
+          onDelete={(id) => {
+            setIdDelete(id)
+          }}
+          onEdit={(lead) => {
+            setDetail(lead)
+            setMode("create")
           }}
         />
       )
@@ -91,7 +102,7 @@ const LeadPage = () => {
           onChange={(e) => {
             setS(e.target.value)
           }}
-          autofocus={true}
+          autoFocus={true}
           value={s}
           onEnter={() => {
             console.log("Search on enter:", s)
@@ -207,7 +218,7 @@ const LeadPage = () => {
                   type="danger"
                   size="small"
                   onClick={() => {
-                    console.log("Delete lead", lead.id)
+                    setIdDelete(lead.id)
                   }}
                 >
                   <Icon.Trash size={14} />
@@ -226,6 +237,31 @@ const LeadPage = () => {
           setPage(page)
         }}
       />
+      <Modal
+        isOpen={!!idDelete}
+        onClose={() => {
+          setIdDelete(null)
+        }}
+        width={200}
+        title={"Xác nhận xóa khách hàng"}
+        actions={[
+          <Button
+            key="confirm-delete"
+            type="danger"
+            onClick={() => {
+              if (idDelete) {
+                // Call delete user service
+                console.log("Delete user with ID:", idDelete)
+              }
+              setIdDelete(null)
+            }}
+          >
+            Xóa
+          </Button>,
+        ]}
+      >
+        <p>Bạn có chắc chắn muốn xóa người dùng này?</p>
+      </Modal>
     </ListPage>
   )
 }
@@ -453,7 +489,17 @@ const LeadForm = ({ onClose, data }: { onClose?: () => void; data?: Lead }) => {
   )
 }
 
-const LeadDetail = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
+const LeadDetail = ({
+  lead,
+  onClose,
+  onDelete,
+  onEdit,
+}: {
+  lead: Lead
+  onClose: () => void
+  onDelete?: (leadId: number) => void
+  onEdit?: (lead: Lead) => void
+}) => {
   return (
     <DetailPage.Wrap>
       <DetailPage.Title>
@@ -510,6 +556,7 @@ const LeadDetail = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
           onClick={() => {
             // Handle edit action
             console.log("Edit lead", lead.id)
+            onEdit && onEdit(lead)
           }}
         >
           <Icon.Edit size={20} />
@@ -520,6 +567,7 @@ const LeadDetail = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
           onClick={() => {
             // Handle delete action
             console.log("Delete lead", lead.id)
+            onDelete && onDelete(lead.id)
           }}
         >
           <Icon.Trash size={20} />

@@ -6,20 +6,21 @@ generator client {
 
 datasource db {
   provider = "mysql" // Hoặc "mysql", "mongodb", "sqlite" tùy theo database bạn sử dụng
-  url      = "mysql://customer_care_user:your_password@localhost:3306/customer_care" // Đường dẫn tới file SQLite, hoặc chuỗi kết nối cho MySQL, PostgreSQL, MongoDB
+  url      = "mysql://root:@localhost:3306/customer_care" // Đường dẫn tới file SQLite, hoặc chuỗi kết nối cho MySQL, PostgreSQL, MongoDB
+  // url      = "mysql://customer_care_user:your_password@localhost:3306/customer_care" // Đường dẫn tới file SQLite, hoặc chuỗi kết nối cho MySQL, PostgreSQL, MongoDB
 }
 
 /// Bảng User (Người dùng/Nhân viên)
 model User {
   id          Int      @id @default(autoincrement())
-  username    String   @unique
-  password    String // Cần hash mật khẩu trước khi lưu vào DB
-  fullName    String
-  email       String?  @unique // Email có thể null nếu không bắt buộc
-  phoneNumber String?  @unique // Số điện thoại có thể null nếu không bắt buộc
-  role        String   @default("Tư vấn viên") // Ví dụ: "Admin", "Tư vấn viên", "Marketing"
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  name        String   @map("full_name") @db.VarChar(255)
+  username    String?  @unique @db.VarChar(100)
+  password    String   @db.VarChar(255) // Cần hash mật khẩu trước khi lưu vào DB
+  email       String   @unique @db.VarChar(255) // Email bắt buộc cho login
+  phoneNumber String?  @unique @map("phone_number") @db.VarChar(20) // Số điện thoại có thể null nếu không bắt buộc
+  role        UserRole @default(STAFF) // Enum role
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   assignedLeads       Lead[]        @relation("AssignedLeads") // Mối quan hệ 1-n với Lead
   interactions        Interaction[] // Mối quan hệ 1-n với Interaction (người tạo tương tác)
@@ -166,4 +167,20 @@ model Message {
   sentByUserId Int // FK tới User (người gửi tin nhắn)
 
   @@map("messages")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  STAFF
+  MARKETING
+  CUSTOMER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  LOST
 }

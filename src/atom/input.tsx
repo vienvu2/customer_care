@@ -23,7 +23,7 @@ type Props = {
   onEnter?: (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void
-  autofocus?: boolean
+  autoFocus?: boolean
 }
 
 export const Input = (props: Props) => {

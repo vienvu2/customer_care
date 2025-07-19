@@ -2,11 +2,18 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 
 export default function Home() {
-  const route = useRouter()
+  const router = useRouter()
+  
   useEffect(() => {
-    route.push("/dashboard")
-  }, [])
-  return <div>   phát triển tính năng Dashboard cho người dùng.</div>
+    router.push("/dashboard")
+  }, [router])
+
+  return (
+    <AuthGuard>
+      <div>Redirecting to dashboard...</div>
+    </AuthGuard>
+  )
 }

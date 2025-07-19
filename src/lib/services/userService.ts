@@ -13,6 +13,35 @@ export class UserService {
         }
     }
 
+    static async getList (page: number = 1, limit: number = 10, search = ''): Promise<{
+        data: User[];
+        total: number;
+        search?: string;
+    }> {
+        console.log('Fetching leads with pagination:', { page, limit })
+        try {
+            const list = await prisma.user.findMany({
+                skip: (page - 1) * limit,
+                take: limit,
+                where: {
+                    OR: [
+                        { name: { contains: search } },
+                        { email: { contains: search } },
+                        { phoneNumber: { contains: search } },
+                        { username: { contains: search } }
+                    ]
+                },
+                orderBy: { createdAt: 'desc' }
+            })
+            const total = await prisma.user.count()
+            return {
+                data: list,
+                total: total
+            }
+        } catch (error) {
+            throw new Error('Failed to fetch users')
+        }
+    }
     static async getUserById (id: number): Promise<User> {
         try {
             const user = await prisma.user.findUnique({
@@ -29,14 +58,7 @@ export class UserService {
         }
     }
 
-    static async createUser (userData: {
-        email: string
-        phoneNumber: string
-        username: string
-        password: string
-        fullName: string
-        role: string
-    }): Promise<User> {
+    static async createUser (userData: Partial<User>): Promise<User> {
         try {
             // Check if email already exists
             const existingUser = await prisma.user.findUnique({
@@ -48,7 +70,7 @@ export class UserService {
             }
 
             return await prisma.user.create({
-                data: userData
+                data: userData as User
             })
         } catch (error) {
             console.error('Error creating user:', error)

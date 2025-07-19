@@ -26,8 +26,8 @@ export async function POST (request: NextRequest) {
             phoneNumber: body.phoneNumber || '',
             username: body.username || '',
             password: body.password || '',
-            fullName: body.fullName || '',
-            role: body.role || 'user' // Default role if not provided
+            name: body.name || '',
+            role: body.role || 'user',
         });
 
         return NextResponse.json({

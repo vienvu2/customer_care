@@ -1,24 +1,37 @@
-import { LeadService } from '@/lib/services/leadService';
-import { NextRequest, NextResponse } from 'next/server';
+import { AuthService } from '@/lib/services/authService'
+import { NextRequest, NextResponse } from 'next/server'
+import { ApiResponse } from '@/lib/types'
 
-export async function POST (request: NextRequest) {
-    try {
-        const body = await request.json();
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { email, password } = body
 
-        // Logic tạo user mới
-        const createdUser = await LeadService.create({
-            ...body,
-        });
-
-        return NextResponse.json({
-            success: true,
-            data: createdUser
-        }, { status: 201 });
-    } catch (error) {
-        return NextResponse.json(
-            { success: false, error: 'Tạo khách hàng tiềm năng thất bại' },
-            { status: 500 }
-        );
+    if (!email || !password) {
+      const response: ApiResponse<null> = {
+        success: false,
+        error: 'Email và mật khẩu là bắt buộc'
+      }
+      return NextResponse.json(response, { status: 400 })
     }
+
+    const authResult = await AuthService.login({ email, password })
+
+    const response: ApiResponse<typeof authResult> = {
+      success: true,
+      data: authResult
+    }
+
+    return NextResponse.json(response)
+  } catch (error) {
+    console.error('Login API error:', error)
+    
+    const response: ApiResponse<null> = {
+      success: false,
+      error: error instanceof Error ? error.message : 'Đăng nhập thất bại'
+    }
+    
+    return NextResponse.json(response, { status: 401 })
+  }
 }
 
