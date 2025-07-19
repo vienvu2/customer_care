@@ -4,12 +4,50 @@ import Link from "next/link"
 import { styled } from "styled-components"
 import * as Icon from "lucide-react"
 import { usePathname } from "next/navigation"
+
+type IMenu = {
+  key: string
+  label: string
+  icon: React.ReactNode
+  href: string
+}
 export const SideBar = () => {
+  const menus: IMenu[] = [
+    {
+      key: "dashboard",
+      label: "Dashboard",
+      icon: <Icon.ChartBarBigIcon size={14} />,
+      href: "/dashboard",
+    },
+    {
+      key: "leads",
+      label: "Khách hàng tiềm năng",
+      icon: <Icon.User2 size={14} />,
+      href: "/leads",
+    },
+
+    {
+      key: "users",
+      label: "Người dùng",
+      icon: <Icon.Settings size={14} />,
+      href: "/users",
+    },
+  ]
   const pathname = usePathname()
   return (
     <Styled.Sidebar>
       <Styled.Menu>
-        <Styled.MenuItem
+        {menus.map((menu) => (
+          <Styled.MenuItem
+            key={menu.key}
+            href={menu.href}
+            className={pathname === menu.href ? "active" : ""}
+          >
+            {menu.icon}
+            {menu.label}
+          </Styled.MenuItem>
+        ))}
+        {/* <Styled.MenuItem
           href="/dashboard"
           className={pathname === "/dashboard" ? "active" : ""}
         >
@@ -22,7 +60,7 @@ export const SideBar = () => {
         >
           <Icon.User2 size={14} />
           Leads
-        </Styled.MenuItem>
+        </Styled.MenuItem> */}
       </Styled.Menu>
     </Styled.Sidebar>
   )

@@ -7,6 +7,9 @@ import { RightSide } from "./rightSide"
 import { useUIStore } from "@/store/ui"
 import { colors } from "@/store/theme"
 
+import { Styled as StyledPage } from "@/components/style"
+import { Button } from "@/atom/button"
+
 type Props = {
   children: React.ReactNode
   header?: React.ReactNode
@@ -60,55 +63,60 @@ export const Layout = ({ children, header, footer, sidebar }: Props) => {
   )
 }
 
-export const Content = ({
-  children,
-  detail,
-}: {
+type ListPageProps = {
   children: React.ReactNode
   detail?: React.ReactNode
-}) => {
+  title?: string
+  actions?: React.ReactNode[]
+}
+
+export const ListPage = ({ children, detail, ...props }: ListPageProps) => {
   const { leftWidth, rightWidth } = useUIStore()
   return (
     <>
-      <Styled.Center>
-        <Styled.Content>
+      <Styled.Content>
+        <StyledPage.Wrap>
+          <StyledPage.Header>
+            <StyledPage.Title>{props.title}</StyledPage.Title>
+            <StyledPage.HeaderActions>{props.actions}</StyledPage.HeaderActions>
+          </StyledPage.Header>
           <div>{children}</div>
-        </Styled.Content>
-        {detail && (
-          <>
-            <Styled.ResizeLine
-              style={{
-                borderRight: `1px solid ${colors.borderPrimary}`,
-              }}
-              onMouseDown={(e) => {
-                const startX = e.clientX
-                const startWidth = rightWidth ?? 250
+        </StyledPage.Wrap>
+      </Styled.Content>
+      {detail && (
+        <>
+          <Styled.ResizeLine
+            style={{
+              borderRight: `1px solid ${colors.borderPrimary}`,
+            }}
+            onMouseDown={(e) => {
+              const startX = e.clientX
+              const startWidth = rightWidth ?? 250
 
-                const min = 200 // Minimum width for the left sidebar
-                const max = 900 // Maximum width for the left sidebar
+              const min = 200 // Minimum width for the left sidebar
+              const max = 900 // Maximum width for the left sidebar
 
-                const onMouseMove = (moveEvent: MouseEvent) => {
-                  const newWidth = startWidth - (moveEvent.clientX - startX)
-                  if (newWidth < min || newWidth > max) return
+              const onMouseMove = (moveEvent: MouseEvent) => {
+                const newWidth = startWidth - (moveEvent.clientX - startX)
+                if (newWidth < min || newWidth > max) return
 
-                  useUIStore.getState().setRightWidth(newWidth)
-                }
+                useUIStore.getState().setRightWidth(newWidth)
+              }
 
-                const onMouseUp = () => {
-                  document.removeEventListener("mousemove", onMouseMove)
-                  document.removeEventListener("mouseup", onMouseUp)
-                }
+              const onMouseUp = () => {
+                document.removeEventListener("mousemove", onMouseMove)
+                document.removeEventListener("mouseup", onMouseUp)
+              }
 
-                document.addEventListener("mousemove", onMouseMove)
-                document.addEventListener("mouseup", onMouseUp)
-              }}
-            />
-            <Styled.RightSidebar style={{ width: rightWidth || "250px" }}>
-              {detail}
-            </Styled.RightSidebar>
-          </>
-        )}
-      </Styled.Center>
+              document.addEventListener("mousemove", onMouseMove)
+              document.addEventListener("mouseup", onMouseUp)
+            }}
+          />
+          <Styled.RightSidebar style={{ width: rightWidth || "250px" }}>
+            {detail}
+          </Styled.RightSidebar>
+        </>
+      )}
     </>
   )
 }
@@ -118,6 +126,7 @@ const Styled = {
     min-height: 100vh;
     color: #333;
     background-color: ${colors.bgPrimary};
+    color: ${colors.textPrimary};
   `,
   Header: styled.div``,
   Footer: styled.div``,
@@ -153,6 +162,8 @@ const Styled = {
   Content: styled.div`
     flex: 1; // Allow content to take remaining space
     background-color: ${colors.bgPrimary};
-    width: calc(100% - 500px); // Adjust based on sidebar widths
+
+    height: calc(100vh - 50px); // Adjust based on header height
+    overflow: auto; // Prevent overflow
   `,
 }

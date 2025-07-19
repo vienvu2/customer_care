@@ -14,13 +14,16 @@ type Props = {
   placeholder?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   disable?: boolean
+
+  label?: string
 }
 
 export const Input = (props: Props) => {
-  const { value, placeholder, onChange, size = "medium" } = props
+  const { value, placeholder, onChange, size = "medium", label } = props
 
   return (
     <Styled.Wrap size={size}>
+      {label ? <Styled.Label>{props.label}</Styled.Label> : null}
       {/* {props.leftIcon && (
         <span className="icon left-icon">{props.leftIcon}</span>
       )} */}
@@ -64,6 +67,12 @@ const getSizeStyles = (size: Props["size"]) => {
 }
 
 const Styled = {
+  Label: styled.label`
+    display: block;
+    margin-bottom: ${spacing.xs};
+    font-size: 14px;
+    color: ${colors.textPrimary};
+  `,
   Wrap: styled.div<{ size: Props["size"] }>`
     position: relative;
     display: flex;
