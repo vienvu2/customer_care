@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "mysql" // Hoặc "mysql", "mongodb", "sqlite" tùy theo database bạn sử dụng
-  url      = "mysql://root:@localhost:3306/customer_care" // Đường dẫn tới file SQLite, hoặc chuỗi kết nối cho MySQL, PostgreSQL, MongoDB
+  url      = "mysql://customer_care_user:@localhost:3306/customer_care" // Đường dẫn tới file SQLite, hoặc chuỗi kết nối cho MySQL, PostgreSQL, MongoDB
 }
 
 /// Bảng User (Người dùng/Nhân viên)
