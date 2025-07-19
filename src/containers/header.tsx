@@ -7,10 +7,13 @@ import { colors } from "@/store/theme"
 import { useUIStore } from "@/store/ui"
 import {
   Bell,
+  CalendarPlus,
   LogOut,
+  MessageCirclePlus,
   PanelRightClose,
   PanelRightOpen,
   Plus,
+  UserPlus,
 } from "lucide-react"
 import { Modal } from "@/components/modal"
 import { useState } from "react"
@@ -51,7 +54,7 @@ export const Header = () => {
       </Styled.Center>
       <Styled.Right>
         <ThemeToggle />
-        <Button size="small" type="light"  onClick={() => setIsOpen(true)}>
+        <Button size="small" type="light" onClick={() => setIsOpen(true)}>
           <Bell color="white" size={14} />
         </Button>
         <Button size="small" type="light" onClick={() => setIsOpen(true)}>
@@ -59,7 +62,6 @@ export const Header = () => {
             color="white"
             size={14}
             onClick={() => {
-              // Logic to handle logout
               console.log("Logout clicked")
             }}
           />
@@ -76,27 +78,28 @@ export const Header = () => {
       >
         <Row>
           <Col span={12}>
-            <Button block>
-              <Plus size={20} />
+            <Button
+              block
+              size="large"
+              onClick={() => {
+                console.log("Create lead clicked")
+                setIsOpen(false)
+              }}
+            >
+              <UserPlus size={20} />
               Tạo khách hàng tiềm năng
             </Button>
           </Col>
           <Col span={12}>
-            <Button block>
-              <Plus size={20} />
-              Tạo cơ hội
+            <Button block size="large">
+              <MessageCirclePlus />
+              Tạo tương tác
             </Button>
           </Col>
           <Col span={12}>
-            <Button block>
-              <Plus size={20} />
-              Tạo hợp đồng
-            </Button>
-          </Col>
-          <Col span={12}>
-            <Button block>
-              <Plus size={20} />
-              Tạo hóa đơn
+            <Button block size="large">
+              <CalendarPlus size={20} />
+              Tạo lịch hẹn
             </Button>
           </Col>
         </Row>

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 import { Table } from "@/components/table"
 import { Layout } from "@/containers/wrap"
 import { Lead } from "@prisma/client"

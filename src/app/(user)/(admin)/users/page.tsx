@@ -20,16 +20,17 @@ export default function Home() {
 
   const [isCreate, setIsCreate] = useState(false)
 
-  const [userDetail, setUserDetail] = useState<User | null>(null)
+  const [userDetail, setUserDetail] = useState<User | undefined>()
 
   const renderDetail = () => {
     if (isCreate) {
       return (
         <UserCreate
+          data={userDetail}
           onClose={() => {
             setIsCreate(false)
             fetch() // Refresh list after creating
-            setUserDetail(null)
+            setUserDetail(undefined)
           }}
         />
       )
@@ -40,7 +41,7 @@ export default function Home() {
     return null
   }
 
-  const [idDelete, setIdDelete] = useState<number | null>(null)
+  const [idDelete, setIdDelete] = useState<number | undefined>()
 
   return (
     <ListPage
@@ -62,6 +63,13 @@ export default function Home() {
         list={list}
         onRowClick={(user) => setUserDetail(user)}
         columns={[
+          {
+            key: "username",
+            label: "Tên đăng nhập",
+            width: "150px",
+            align: "left",
+            render: (user) => user.username,
+          },
           {
             key: "name",
             label: "Full name",
@@ -93,12 +101,13 @@ export default function Home() {
           {
             key: "actions",
             label: "Actions",
-            width: "150px",
+            width: "70px",
             align: "center",
             render: (user) => (
               <Flex>
                 <Button
                   type="secondary"
+                  size="small"
                   onClick={() => {
                     setUserDetail(user)
                   }}
@@ -106,6 +115,7 @@ export default function Home() {
                   <Icon.Edit size={16} />
                 </Button>
                 <Button
+                  size="small"
                   type="danger"
                   onClick={() => {
                     // Handle delete action
@@ -122,8 +132,8 @@ export default function Home() {
       <Modal
         isOpen={!!idDelete}
         onClose={() => {
-          setIdDelete(null)
-          setUserDetail(null)
+          setIdDelete(undefined)
+          setUserDetail(undefined)
         }}
         title={"Xác nhận xóa người dùng"}
         actions={[
@@ -135,8 +145,8 @@ export default function Home() {
                 // Call delete user service
                 console.log("Delete user with ID:", idDelete)
               }
-              setIdDelete(null)
-              setUserDetail(null)
+              setIdDelete(undefined)
+              setUserDetail(undefined)
             }}
           >
             Xóa
@@ -151,9 +161,11 @@ export default function Home() {
 
 const UserCreate = ({
   onClose,
+  data,
 }: {
   onClose?: () => void
   onCreateSuccess?: (user: User) => void
+  data?: User
 }) => {
   const { create } = useCreate<User>("users")
   const inputs: RowInput<Partial<User>>[] = [
@@ -263,6 +275,10 @@ const UserDetail = ({
         <DetailPage.Row>
           <DetailPage.Label>Họ và tên:</DetailPage.Label>
           <DetailPage.Value>{user.name}</DetailPage.Value>
+        </DetailPage.Row>
+        <DetailPage.Row>
+          <DetailPage.Label>Tên đăng nhập:</DetailPage.Label>
+          <DetailPage.Value>{user.username}</DetailPage.Value>
         </DetailPage.Row>
         <DetailPage.Row>
           <DetailPage.Label>Email:</DetailPage.Label>
