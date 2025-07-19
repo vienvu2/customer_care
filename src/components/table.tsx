@@ -13,9 +13,10 @@ type Column<T> = {
 type Props<T> = {
   list: T[]
   columns: Column<T>[]
+  onRowClick?: (item: T) => void
 }
 
-export const Table = <T,>({ list, columns }: Props<T>) => {
+export const Table = <T,>({ list, columns, onRowClick }: Props<T>) => {
   return (
     <Styled>
       <thead>
@@ -32,7 +33,12 @@ export const Table = <T,>({ list, columns }: Props<T>) => {
       </thead>
       <tbody>
         {list.map((item, idx) => (
-          <tr key={idx}>
+          <tr
+            key={idx}
+            onClick={() => {
+              if (onRowClick) onRowClick(item)
+            }}
+          >
             {columns.map((col) => (
               <td key={col.key} style={{ textAlign: col.align }}>
                 {col.render(item)}

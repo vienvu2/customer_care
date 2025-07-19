@@ -6,16 +6,19 @@ import { Content, Layout } from "@/containers/wrap"
 import useList from "@/hook/list"
 import { Lead } from "@prisma/client"
 import * as Icon from "lucide-react"
+import { useState } from "react"
 
 const LeadPage = () => {
   const { list } = useList<Lead>("leads")
+
+  const [leadDetail, setDetail] = useState<Lead | null>(null)
 
   const renderDetail = (lead: Lead) => {
     return <LeadDetail lead={lead} />
   }
   return (
     <Content
-      detail={list.length > 0 ? renderDetail(list[0]) : null} // Assuming you want to show details of the first lead
+      detail={leadDetail ? renderDetail(leadDetail) : null} // Assuming you want to show details of the first lead
     >
       <Styled.Wrap>
         <Styled.Header>
@@ -34,11 +37,12 @@ const LeadPage = () => {
         </Styled.Header>
         <Table<Lead>
           list={list}
+          onRowClick={(lead) => setDetail(lead)}
           columns={[
             {
               key: "id",
               label: "ID",
-              width: "50px",
+              width: "20px",
               align: "left",
               render: (lead) => lead.id,
             },
