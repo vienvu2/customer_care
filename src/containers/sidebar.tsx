@@ -32,6 +32,18 @@ export const SideBar = () => {
       icon: <Icon.Settings size={14} />,
       href: "/users",
     },
+    {
+      key: "interactions",
+      label: "Tương tác",
+      icon: <Icon.MessageCircle size={14} />,
+      href: "/interactions",
+    },
+    {
+      key: "appointments",
+      label: "Lịch hẹn",
+      icon: <Icon.Calendar size={14} />,
+      href: "/appointments",
+    },
   ]
   const pathname = usePathname()
   return (
