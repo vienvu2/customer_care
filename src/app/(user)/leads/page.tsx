@@ -1,5 +1,6 @@
 "use client"
 import { Button } from "@/atom/button"
+import Tooltip from "@/atom/tooltip"
 import { FormData, RowInput } from "@/components/form"
 import { Paging } from "@/components/paging"
 import { Flex, FormStyled, DetailPage } from "@/components/style"
@@ -138,31 +139,35 @@ const LeadPage = () => {
             align: "left",
             render: (lead) => (
               <Flex>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => {
-                    setMode("view")
-                    setDetail(lead)
-                  }}
-                >
-                  <Icon.Eye size={14} />
-                </Button>
-                <Button
-                  type="secondary"
-                  size="small"
-                  onClick={() => {
-                    setMode("create")
-                    setDetail(lead)
-                  }}
-                >
-                  <Icon.Edit size={14} />
-                </Button>
+                <Tooltip content="Xem chi tiết khách hàng">
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                      setMode("view")
+                      setDetail(lead)
+                    }}
+                  >
+                    <Icon.Eye size={14} />
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Thêm hành động">
+                  <Button
+                    type="success"
+                    size="small"
+                    onClick={() => {
+                      setMode("create")
+                      setDetail(lead)
+                    }}
+                  >
+                    <Icon.Plus size={14} />
+                  </Button>
+                </Tooltip>
+
                 <Button
                   type="danger"
                   size="small"
                   onClick={() => {
-                    // Handle delete action
                     console.log("Delete lead", lead.id)
                   }}
                 >
@@ -497,8 +502,6 @@ const LeadImport = ({ onClose }: { onClose?: () => void }) => {
               })
             }
           )
-          console.log("Import leads")
-          // if (onClose) onClose()
         }}
       >
         Nhập dữ liệu
