@@ -150,7 +150,7 @@ const LeadPage = () => {
           {
             key: "name",
             label: "Name",
-            width: "200px",
+            width: "100%",
             align: "left",
             render: (lead) => lead.fullName,
           },
@@ -185,7 +185,7 @@ const LeadPage = () => {
           {
             key: "actions",
             label: "Actions",
-            width: "100px",
+            width: "80px",
             align: "left",
             render: (lead) => (
               <Flex>
@@ -213,16 +213,29 @@ const LeadPage = () => {
                     <Icon.Plus size={14} />
                   </Button>
                 </Tooltip>
-
-                <Button
-                  type="danger"
-                  size="small"
-                  onClick={() => {
-                    setIdDelete(lead.id)
-                  }}
-                >
-                  <Icon.Trash size={14} />
-                </Button>
+                <Tooltip content="Thêm lịch hẹn">
+                  <Button
+                    type="success"
+                    size="small"
+                    onClick={() => {
+                      setMode("activity")
+                      setDetail(lead)
+                    }}
+                  >
+                    <Icon.CalendarPlus size={14} />
+                  </Button>
+                </Tooltip>
+                {/* <Tooltip content="Xóa khách hàng">
+                  <Button
+                    type="danger"
+                    size="small"
+                    onClick={() => {
+                      setIdDelete(lead.id)
+                    }}
+                  >
+                    <Icon.Trash size={14} />
+                  </Button>
+                </Tooltip> */}
               </Flex>
             ),
             // Add actions column for edit/delete if needed

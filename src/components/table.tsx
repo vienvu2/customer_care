@@ -65,6 +65,7 @@ const Styled = styled.table`
 
   th {
     background-color: ${colors.bgSecondary};
+    white-space: nowrap;
   }
 
   tr:nth-child(even) {
