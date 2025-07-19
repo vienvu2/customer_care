@@ -58,21 +58,10 @@ export const useUIStore = create<UIState>()(
 
             toggleTheme: () => {
                 const newTheme = get().theme === 'light' ? 'dark' : 'light'
-
-                // Tự động update CSS attribute
-                if (typeof window !== 'undefined') {
-                    document.documentElement.setAttribute('data-theme', newTheme)
-                }
-
                 set({ theme: newTheme })
             },
 
             setTheme: (theme) => {
-                // Tự động update CSS attribute
-                if (typeof window !== 'undefined') {
-                    document.documentElement.setAttribute('data-theme', theme)
-                }
-
                 set({ theme })
             },
 

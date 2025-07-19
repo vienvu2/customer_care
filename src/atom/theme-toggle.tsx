@@ -14,7 +14,7 @@ export const ThemeToggle = () => {
   }, [theme])
 
   return (
-    <Styled.Button onClick={toggleTheme} aria-label="Toggle theme">
+    <Styled.Button onClick={() => toggleTheme()} aria-label="Toggle theme">
       {theme === "light" ? <Sun size={12} /> : <Moon size={12} />}
     </Styled.Button>
   )

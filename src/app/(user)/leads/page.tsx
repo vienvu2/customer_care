@@ -1,6 +1,7 @@
 "use client"
 import { Button } from "@/atom/button"
 import { FormData, RowInput } from "@/components/form"
+import { Paging } from "@/components/paging"
 import { Flex, FormStyled, DetailPage } from "@/components/style"
 import { Table } from "@/components/table"
 import { ListPage } from "@/containers/wrap"
@@ -15,7 +16,8 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 const LeadPage = () => {
-  const { list, fetch } = useList<Lead>("leads")
+  const { list, fetch, page, total, limit, setPage, setLimit } =
+    useList<Lead>("leads")
 
   const [leadDetail, setDetail] = useState<Lead | undefined>()
   const [mode, setMode] = useState<"" | "view" | "create" | "import">("")
@@ -171,6 +173,14 @@ const LeadPage = () => {
             // Add actions column for edit/delete if needed
           },
         ]}
+      />
+      <Paging
+        total={total}
+        pageSize={limit} // Adjust as needed
+        currentPage={page} // Implement pagination logic if needed
+        onPageChange={(page) => {
+          setPage(page)
+        }}
       />
     </ListPage>
   )

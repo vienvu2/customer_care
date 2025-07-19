@@ -54,12 +54,12 @@ export const shadows = {
 
 // Helper function để get CSS variable value
 export const getCSSVariable = (variable: string): string => {
-    if (typeof window === 'undefined') return ''
+    // if (typeof window === 'undefined') return ''
     return getComputedStyle(document.documentElement).getPropertyValue(variable).trim()
 }
 
 // Helper function để set CSS variable
 export const setCSSVariable = (variable: string, value: string): void => {
-    if (typeof window === 'undefined') return
+    // if (typeof window === 'undefined') return
     document.documentElement.style.setProperty(variable, value)
 }

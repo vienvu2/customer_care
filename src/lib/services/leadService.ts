@@ -24,6 +24,27 @@ export class LeadService {
         }
     }
 
+    static async getList (page: number = 1, limit: number = 10): Promise<{
+        data: Lead[];
+        total: number;
+    }> {
+        console.log('Fetching leads with pagination:', { page, limit })
+        try {
+            const list = await prisma.lead.findMany({
+                skip: (page - 1) * limit,
+                take: limit,
+                orderBy: { createdAt: 'desc' }
+            })
+            const total = await prisma.lead.count()
+            return {
+                data: list,
+                total: total
+            }
+        } catch (error) {
+            throw new Error('Failed to fetch users')
+        }
+    }
+
     static async getById (id: number): Promise<Lead> {
         try {
             const lead = await prisma.lead.findUnique({

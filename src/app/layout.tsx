@@ -29,7 +29,6 @@ export default function RootLayout({
           hideProgressBar={true}
           closeOnClick
           draggable
-        
         />
       </body>
     </html>

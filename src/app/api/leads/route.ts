@@ -1,12 +1,19 @@
 import { LeadService } from '@/lib/services/leadService';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET () {
+export async function GET (request: NextRequest) {
     try {
-        const users = await LeadService.getAll();
+        const page = request.nextUrl.searchParams.get('page') || '1';
+        const limit = request.nextUrl.searchParams.get('limit') || '10';
+        console.log('Fetching leads with pagination2:', { page, limit });
+        const { data, total } = await LeadService.getList(
+            parseInt(page, 10),
+            parseInt(limit, 10)
+        );
         return NextResponse.json({
             success: true,
-            data: users
+            data: data,
+            total: total,
         });
     } catch (error) {
         return NextResponse.json(

@@ -6,10 +6,12 @@ const useList = <T> (source: string) => {
     const [list, setList] = useState<T[]>([])
     const [total, setTotal] = useState(0)
     const [loading, setLoading] = useState(true)
+
+    const [page, setPage] = useState(1)
+    const [limit, setLimit] = useState(10)
     const fetch = async (
-        page: number = 1,
-        limit: number = 10
     ) => {
+
         try {
             const query = {
                 page: page.toString(),
@@ -17,6 +19,7 @@ const useList = <T> (source: string) => {
             }
             const response = await axios.get("/api/" + source + '?' + new URLSearchParams(query).toString())
             console.log("Response:", response.data.data)
+            setTotal(response.data.total)
             setList(response.data.data as T[])
 
         } catch (error) {
@@ -29,14 +32,24 @@ const useList = <T> (source: string) => {
 
     useEffect(() => {
         fetch()
-    }, [])
+    }, [page, limit])
+
+    const refetch = () => {
+        setLoading(true)
+        fetch()
+    }
 
 
     return {
         fetch,
+        refetch,
         list,
         loading,
         total,
+        page,
+        limit,
+        setPage,
+        setLimit,
     }
 }
 

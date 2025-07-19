@@ -1,3 +1,4 @@
+'use client'
 import { useForm, UseFormRegister } from "react-hook-form"
 import { FormStyled } from "./style"
 import { Select } from "@/atom/select"
