@@ -2,13 +2,10 @@
 import { Header } from "@/containers/header"
 import { SideBar } from "@/containers/sidebar"
 import { styled } from "styled-components"
-import { Footer } from "./footer"
-import { RightSide } from "./rightSide"
 import { useUIStore } from "@/store/ui"
 import { colors } from "@/store/theme"
 
 import { Styled as StyledPage } from "@/components/style"
-import { Button } from "@/atom/button"
 
 type Props = {
   children: React.ReactNode

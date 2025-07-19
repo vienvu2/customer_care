@@ -5,12 +5,10 @@ export async function GET (request: NextRequest) {
     try {
         const page = request.nextUrl.searchParams.get('page') || '1';
         const limit = request.nextUrl.searchParams.get('limit') || '10';
-        const search = request.nextUrl.searchParams.get('search') || '';
         console.log('Fetching leads with pagination2:', { page, limit });
         const { data, total } = await LeadService.getList(
             parseInt(page, 10),
-            parseInt(limit, 10),
-            search.trim() // Ensure search is trimmed
+            parseInt(limit, 10)
         );
         return NextResponse.json({
             success: true,

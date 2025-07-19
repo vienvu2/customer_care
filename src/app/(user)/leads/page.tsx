@@ -1,5 +1,6 @@
 "use client"
 import { Button } from "@/atom/button"
+import { Input } from "@/atom/input"
 import Tooltip from "@/atom/tooltip"
 import { FormData, RowInput } from "@/components/form"
 import { Paging } from "@/components/paging"
@@ -10,20 +11,44 @@ import useCreate from "@/hook/create"
 import { useExcel } from "@/hook/exel"
 import useList from "@/hook/list"
 import { colors } from "@/store/theme"
-import { Lead } from "@prisma/client"
+import { Interaction, Lead } from "@prisma/client"
 import * as Icon from "lucide-react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
 const LeadPage = () => {
-  const { list, fetch, page, total, limit, setPage, setLimit } =
-    useList<Lead>("leads")
+  const {
+    list,
+    fetch,
+    page,
+    total,
+    limit,
+    setPage,
+    setLimit,
+    setSearch,
+    search,
+  } = useList<Lead>("leads")
 
   const [leadDetail, setDetail] = useState<Lead | undefined>()
-  const [mode, setMode] = useState<"" | "view" | "create" | "import">("")
+  const [mode, setMode] = useState<
+    "" | "view" | "create" | "import" | "activity"
+  >("")
+
+  const [s, setS] = useState("")
 
   const renderDetail = () => {
+    if (mode == "activity") {
+      return (
+        <ActivityForm
+          lead={leadDetail}
+          onClose={() => {
+            setMode("")
+            fetch() // Refresh the list after creating a new activity
+          }}
+        />
+      )
+    }
     if (mode == "create") {
       return (
         <LeadForm
@@ -60,6 +85,19 @@ const LeadPage = () => {
   return (
     <ListPage
       actions={[
+        <Input
+          key="search"
+          placeholder="Tìm kiếm khách hàng, hoạt động, trạng thái ..."
+          onChange={(e) => {
+            setS(e.target.value)
+          }}
+          autofocus={true}
+          value={s}
+          onEnter={() => {
+            console.log("Search on enter:", s)
+            setSearch(s.trim()) // Trim whitespace
+          }}
+        />,
         <Button
           key="add-lead"
           type="primary"
@@ -157,7 +195,7 @@ const LeadPage = () => {
                     type="success"
                     size="small"
                     onClick={() => {
-                      setMode("create")
+                      setMode("activity")
                       setDetail(lead)
                     }}
                   >
@@ -193,6 +231,100 @@ const LeadPage = () => {
 }
 
 export default LeadPage
+
+const ActivityForm = ({
+  onClose,
+  data,
+  lead,
+}: {
+  onClose?: () => void
+  data?: Interaction
+  lead?: Lead
+}) => {
+  const { register, handleSubmit, setValue, reset } =
+    useForm<Partial<Interaction>>()
+
+  const inputs: RowInput<Interaction>[] = [
+    {
+      name: "interactionType",
+      label: "Loại hoạt động",
+      type: "select",
+      placeholder: "Chọn loại hoạt động",
+      options: [
+        { value: "call", label: "Cuộc gọi" },
+        { value: "email", label: "Email" },
+        { value: "meeting", label: "Cuộc họp" },
+        { value: "note", label: "Ghi chú" },
+      ],
+      required: true,
+    },
+    {
+      name: "createdAt",
+      label: "Ngày hoạt động",
+      type: "date",
+      placeholder: "Chọn ngày hoạt động",
+      required: true,
+    },
+    {
+      name: "content",
+      label: "Chi tiết hoạt động",
+      type: "textarea",
+      placeholder: "Nhập chi tiết hoạt động",
+      required: true,
+    },
+  ]
+
+  const { create } = useCreate<Interaction>("interactions")
+
+  const onSubmit = (data: Partial<Interaction>) => {
+    console.log("Form submitted with data:", data)
+    create(
+      data,
+      () => {
+        console.log("Lead created successfully")
+        if (onClose) onClose()
+      },
+      (error) => {
+        console.error("Error creating lead:", error)
+        toast("Lỗi khi tạo khách hàng", {
+          type: "error",
+          autoClose: 5000,
+        })
+      }
+    )
+  }
+  const runSubmit = () => {
+    handleSubmit(onSubmit, (errors) => {
+      console.error("Validation errors:", errors)
+      toast("Vui lòng điền đầy đủ thông tin", {
+        type: "warning",
+        autoClose: 5000,
+      })
+    })()
+  }
+
+  return (
+    <FormStyled.Wrap>
+      <FormStyled.Title>
+        <Icon.Activity size={24} />
+        Thông tin hoạt động cho khách hàng {lead?.fullName || "mới"}
+        <div style={{ flex: 1 }} />
+        <Button
+          type="light"
+          onClick={() => {
+            if (onClose) onClose()
+          }}
+        >
+          <Icon.X size={20} color={colors.textPrimary} />
+        </Button>
+      </FormStyled.Title>
+      <FormData<Interaction> inputs={inputs} register={register} />
+      <Button block={true} type="primary" onClick={() => runSubmit()}>
+        Lưu thông tin hoạt động
+      </Button>
+    </FormStyled.Wrap>
+  )
+}
 
 const LeadForm = ({ onClose, data }: { onClose?: () => void; data?: Lead }) => {
   const { register, handleSubmit, setValue, reset } = useForm<Partial<Lead>>()

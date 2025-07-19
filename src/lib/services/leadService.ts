@@ -24,15 +24,23 @@ export class LeadService {
         }
     }
 
-    static async getList (page: number = 1, limit: number = 10): Promise<{
+    static async getList (page: number = 1, limit: number = 10, search = ''): Promise<{
         data: Lead[];
         total: number;
+        search?: string;
     }> {
         console.log('Fetching leads with pagination:', { page, limit })
         try {
             const list = await prisma.lead.findMany({
                 skip: (page - 1) * limit,
                 take: limit,
+                where: {
+                    OR: [
+                        { fullName: { contains: search } },
+                        { email: { contains: search } },
+                        { phoneNumber: { contains: search } }
+                    ]
+                },
                 orderBy: { createdAt: 'desc' }
             })
             const total = await prisma.lead.count()

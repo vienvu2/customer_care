@@ -84,7 +84,7 @@ const Styled = {
 
     &.b-small {
       height: 28px;
-      padding: 0 12px;
+      padding: 0 6px;
       font-size: 12px;
     }
     &.b-medium {

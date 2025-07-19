@@ -25,7 +25,7 @@ export const Styled = {
     color: ${colors.textPrimary};
   `,
   Title: styled.div`
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
     margin-bottom: 0;
     flex: 1;
@@ -36,6 +36,7 @@ export const Styled = {
     align-items: center;
     margin-bottom: 24px;
     padding-top: 16px;
+    white-space: nowrap;
   `,
 
   HeaderActions: styled.div`

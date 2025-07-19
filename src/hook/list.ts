@@ -9,6 +9,7 @@ const useList = <T> (source: string) => {
     const searchParams = useSearchParams()
     const pageParam = searchParams.get('page') || '1'
     const limitParam = searchParams.get('limit') || '25'
+    const searchParam = searchParams.get('search') || ''
 
 
     const [list, setList] = useState<T[]>([])
@@ -20,6 +21,7 @@ const useList = <T> (source: string) => {
             const query = {
                 page: pageParam,
                 limit: limitParam,
+                search: searchParam,
             }
             const response = await axios.get("/api/" + source + '?' + new URLSearchParams(query).toString())
             console.log("Response:", response.data.data)
@@ -34,15 +36,16 @@ const useList = <T> (source: string) => {
     }
     useEffect(() => {
         fetch()
-    }, [source, pageParam, limitParam])
+    }, [source, pageParam, limitParam, searchParam])
 
 
     const [page, setPage] = useState(parseInt(pageParam, 10))
     const [limit, setLimit] = useState(parseInt(limitParam, 10))
+    const [search, setSearch] = useState(searchParam)
 
     useEffect(() => {
-        router.push(`/${source}?page=${page}&limit=${limit}`)
-    }, [page, limit])
+        router.push(`/${source}?page=${page}&limit=${limit}&search=${search}`)
+    }, [page, limit, search])
 
     const refetch = () => {
         setLoading(true)
@@ -60,6 +63,8 @@ const useList = <T> (source: string) => {
         limit,
         setPage,
         setLimit,
+        setSearch,
+        search,
     }
 }
 

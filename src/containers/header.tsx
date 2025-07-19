@@ -5,7 +5,13 @@ import { Input } from "@/atom/input"
 import { ThemeToggle } from "@/atom/theme-toggle"
 import { colors } from "@/store/theme"
 import { useUIStore } from "@/store/ui"
-import { Bell, PanelRightClose, PanelRightOpen, Plus } from "lucide-react"
+import {
+  Bell,
+  LogOut,
+  PanelRightClose,
+  PanelRightOpen,
+  Plus,
+} from "lucide-react"
 import { Modal } from "@/components/modal"
 import { useState } from "react"
 import { Card, Col, Row } from "@/components/style"
@@ -36,7 +42,7 @@ export const Header = () => {
         </Styled.Search>
         <Button
           onClick={() => {
-            setIsOpen(true) 
+            setIsOpen(true)
           }}
         >
           <Plus size={20} />
@@ -45,7 +51,19 @@ export const Header = () => {
       </Styled.Center>
       <Styled.Right>
         <ThemeToggle />
-        <Bell color="white" size={14} />
+        <Button size="small" type="light"  onClick={() => setIsOpen(true)}>
+          <Bell color="white" size={14} />
+        </Button>
+        <Button size="small" type="light" onClick={() => setIsOpen(true)}>
+          <LogOut
+            color="white"
+            size={14}
+            onClick={() => {
+              // Logic to handle logout
+              console.log("Logout clicked")
+            }}
+          />
+        </Button>
       </Styled.Right>
 
       <Modal

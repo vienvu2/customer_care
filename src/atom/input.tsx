@@ -20,10 +20,14 @@ type Props = {
 
   label?: string
   name?: string
+  onEnter?: (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void
+  autofocus?: boolean
 }
 
 export const Input = (props: Props) => {
-  const { label, size, type } = props
+  const { label, size, type, onEnter } = props
   if (type == "textarea") {
     return <Styled.Textarea {...props} size={size} />
   }
@@ -31,6 +35,11 @@ export const Input = (props: Props) => {
     <Styled.Input
       {...props}
       size={size}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && onEnter) {
+          onEnter(e)
+        }
+      }}
       is_left={props.leftIcon ? "true" : "false"}
       is_right={props.rightIcon ? "true" : "false"}
     />
