@@ -1,3 +1,4 @@
+'use client'
 import { ApiResponse, UserCreate } from "@/lib/types"
 import axios from "axios"
 import { useRouter, useSearchParams } from "next/navigation"

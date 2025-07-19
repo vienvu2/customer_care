@@ -13,7 +13,7 @@ import useList from "@/hook/list"
 import { colors } from "@/store/theme"
 import { Interaction, Lead } from "@prisma/client"
 import * as Icon from "lucide-react"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 

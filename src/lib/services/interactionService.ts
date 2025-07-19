@@ -1,7 +1,16 @@
 import { prisma } from '../prisma'
 import { Interaction } from '@prisma/client'
 
-export type InteractionCreateDTO = Partial<Interaction>
+export type InteractionCreateDTO = {
+    leadId: number;
+    type: string;
+    content: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: number;
+    interactionType: string;
+    initiatedByUserId: number;
+}
 
 export class InteractionService {
     static async getAll (): Promise<Interaction[]> {
@@ -63,9 +72,11 @@ export class InteractionService {
             //     throw new Error('Email already exists')
             // }
 
+            // Omit 'id' and 'createdAt' from data before creation
             return await prisma.interaction.create({
                 data: {
                     ...data
+
                 }
             })
         } catch (error) {

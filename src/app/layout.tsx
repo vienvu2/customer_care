@@ -3,6 +3,7 @@ import { Mona_Sans } from "next/font/google"
 import { Layout } from "@/containers/wrap"
 import "./main.scss"
 import { ToastContainer } from "react-toastify"
+import { Suspense } from "react"
 export const font = Mona_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -22,14 +23,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${font.className}`}>
-        <Layout>{children}</Layout>
-        <ToastContainer
-          position="top-right"
-          autoClose={1000}
-          hideProgressBar={true}
-          closeOnClick
-          draggable
-        />
+        <Suspense>
+          <Layout>{children}</Layout>
+          <ToastContainer
+            position="top-right"
+            autoClose={1000}
+            hideProgressBar={true}
+            closeOnClick
+            draggable
+          />
+        </Suspense>
       </body>
     </html>
   )
