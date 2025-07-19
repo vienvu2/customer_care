@@ -1,4 +1,5 @@
 import { UserService } from '@/lib/services/userService';
+import { UserRole } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET () {
@@ -27,7 +28,7 @@ export async function POST (request: NextRequest) {
             username: body.username || '',
             password: body.password || '',
             name: body.name || '',
-            role: body.role || 'user',
+            role: body.role || UserRole.MARKETING, // Mặc định là USER
         });
 
         return NextResponse.json({

@@ -5,14 +5,18 @@ import { ListPage, Layout } from "@/containers/wrap"
 import { Table } from "@/components/table"
 import { Button } from "@/atom/button"
 import useList from "@/hook/list"
-import { User } from "@prisma/client"
+import { User, UserRole } from "@prisma/client"
 import { DetailPage, Flex, FormStyled } from "@/components/style"
 import * as Icon from "lucide-react"
 import { colors } from "@/store/theme"
 import { Modal } from "@/components/modal"
+import useCreate from "@/hook/create"
+import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
+import { FormData, RowInput } from "@/components/form"
 
 export default function Home() {
-  const { list, loading } = useList<User>("users")
+  const { list, loading, fetch } = useList<User>("users")
 
   const [isCreate, setIsCreate] = useState(false)
 
@@ -20,7 +24,15 @@ export default function Home() {
 
   const renderDetail = () => {
     if (isCreate) {
-      return <UserCreate />
+      return (
+        <UserCreate
+          onClose={() => {
+            setIsCreate(false)
+            fetch() // Refresh list after creating
+            setUserDetail(null)
+          }}
+        />
+      )
     }
     if (userDetail) {
       return <UserDetail user={userDetail} />
@@ -137,10 +149,85 @@ export default function Home() {
   )
 }
 
-const UserCreate = () => {
+const UserCreate = ({
+  onClose,
+}: {
+  onClose?: () => void
+  onCreateSuccess?: (user: User) => void
+}) => {
+  const { create } = useCreate<User>("users")
+  const inputs: RowInput<Partial<User>>[] = [
+    {
+      name: "name",
+      label: "Họ và tên",
+      type: "text",
+      required: true,
+      placeholder: "Nhập họ và tên của bạn",
+    },
+    { name: "username", label: "Tên đăng nhập", type: "text" },
+    {
+      name: "role",
+      label: "Vai trò",
+      type: "select",
+      options: [
+        { value: UserRole.CUSTOMER, label: "Người dùng" },
+        { value: UserRole.ADMIN, label: "Quản trị viên" },
+        { value: UserRole.MARKETING, label: "Marketing" },
+        { value: UserRole.STAFF, label: "Hỗ trợ" },
+      ],
+    },
+    { name: "email", label: "Email", type: "email", required: true },
+    { name: "password", label: "Mật khẩu", type: "password", required: true },
+    { name: "phoneNumber", label: "Số điện thoại", type: "text" },
+  ]
+
+  const { register, handleSubmit } = useForm<Partial<User>>({})
+  const onSubmit = (data: Partial<User>) => {
+    console.log("Form submitted with data:", data)
+    create(
+      data,
+      () => {
+        console.log("Lead created successfully")
+        if (onClose) onClose()
+      },
+      (error) => {
+        console.error("Error creating lead:", error)
+        toast("Lỗi khi tạo khách hàng", {
+          type: "error",
+          autoClose: 5000,
+        })
+      }
+    )
+  }
+  const runSubmit = () => {
+    handleSubmit(onSubmit, (errors) => {
+      console.error("Validation errors:", errors)
+      toast("Vui lòng điền đầy đủ thông tin", {
+        type: "warning",
+        autoClose: 5000,
+      })
+    })()
+  }
+
   return (
     <FormStyled.Wrap>
-      <Button onClick={() => console.log("Create user")}>Tạo Người Dùng</Button>
+      <FormStyled.Title>
+        <Icon.User2 size={24} />
+        Thông tin khách hàng
+        <div style={{ flex: 1 }} />
+        <Button
+          type="light"
+          onClick={() => {
+            if (onClose) onClose()
+          }}
+        >
+          <Icon.X size={20} color={colors.textPrimary} />
+        </Button>
+      </FormStyled.Title>
+      <FormData<Partial<User>> inputs={inputs} register={register} />
+      <Button block={true} type="primary" onClick={() => runSubmit()}>
+        Lưu thông tin khách hàng
+      </Button>
     </FormStyled.Wrap>
   )
 }
