@@ -1,5 +1,4 @@
-
-'use client'
+"use client"
 import { colors } from "@/store/theme"
 import styled from "styled-components"
 
@@ -11,6 +10,7 @@ export const Row = styled.div`
 export const Col = styled.div<{ span?: number }>`
   width: ${(props) => (props.span || 12) * (100 / 12)}%;
   padding: 0 12px;
+  margin-bottom: 16px;
 `
 
 export const Flex = styled.div`
@@ -142,5 +142,41 @@ export const DetailPage = {
     margin-top: 16px;
     display: flex;
     justify-content: flex-end;
-    gap: 12px;`
+    gap: 12px;
+  `,
+}
+
+export const Card = {
+  Wrap: styled.div`
+    background-color: ${colors.bgSecondary};
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+  `,
+  Title: styled.h3`
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: ${colors.textPrimary};
+   MOde
+  `,
+  Value: styled.div`
+    font-size: 32px;
+    font-weight: bold;
+    color: ${colors.primary};
+    margin-bottom: 8px;
+  `,
+  Description: styled.div`
+    font-size: 14px;
+    color: ${colors.textSecondary};
+  `,
+  Image: styled.div`
+    width: 100%;
+    height: auto;
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+  `,
 }

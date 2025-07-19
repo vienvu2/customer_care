@@ -1,15 +1,18 @@
 "use client"
+import styled from "styled-components"
 import { Button } from "@/atom/button"
 import { Input } from "@/atom/input"
 import { ThemeToggle } from "@/atom/theme-toggle"
 import { colors } from "@/store/theme"
 import { useUIStore } from "@/store/ui"
-import { Bell, PanelRightClose, PanelRightOpen } from "lucide-react"
+import { Bell, PanelRightClose, PanelRightOpen, Plus } from "lucide-react"
+import { Modal } from "@/components/modal"
 import { useState } from "react"
-import { styled } from "styled-components"
+import { Card, Col, Row } from "@/components/style"
 
 export const Header = () => {
   const { sidebarOpen, setSidebarOpen } = useUIStore()
+  const [isOpen, setIsOpen] = useState(false)
   return (
     <Styled.Wrap>
       <Styled.Left>
@@ -29,19 +32,57 @@ export const Header = () => {
       </Styled.Left>
       <Styled.Center>
         <Styled.Search>
-          <Input />
+          <Input placeholder="Tìm kiếm khách hàng, hoạt động, trạng thái ..." />
         </Styled.Search>
         <Button
-          onClick={() => console.log("Create new item")}
-          leftIcon={<span className="icon-plus" />}
+          onClick={() => {
+            setIsOpen(true) 
+          }}
         >
-          Tạo mới
+          <Plus size={20} />
+          Tạo nhanh
         </Button>
       </Styled.Center>
       <Styled.Right>
         <ThemeToggle />
         <Bell color="white" size={14} />
       </Styled.Right>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false)
+        }}
+        title="Tạo nhanh"
+        width={300}
+      >
+        <Row>
+          <Col span={12}>
+            <Button block>
+              <Plus size={20} />
+              Tạo khách hàng tiềm năng
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Button block>
+              <Plus size={20} />
+              Tạo cơ hội
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Button block>
+              <Plus size={20} />
+              Tạo hợp đồng
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Button block>
+              <Plus size={20} />
+              Tạo hóa đơn
+            </Button>
+          </Col>
+        </Row>
+      </Modal>
     </Styled.Wrap>
   )
 }

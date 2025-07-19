@@ -34,7 +34,7 @@ const Styled = {
       visibility: hidden;
       width: 120px;
       background-color: ${colors.bgSecondary};
-      color: #fff;
+      color: ${colors.textPrimary};
       text-align: center;
       border-radius: 6px;
       padding: 5px 0;

@@ -17,13 +17,6 @@ export class UserService {
         try {
             const user = await prisma.user.findUnique({
                 where: { id },
-                // include: {
-                //     tickets: {
-                //         include: {
-                //             messages: true
-                //         }
-                //     }
-                // }
             })
 
             if (!user) {

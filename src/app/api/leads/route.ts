@@ -29,14 +29,7 @@ export async function POST (request: NextRequest) {
 
         // Logic tạo user mới
         const createdUser = await LeadService.create({
-            email: body.email,
-            phoneNumber: body.phoneNumber || '',
-            fullName: body.fullName || '',
-            zaloId: body.zaloId || null,
-            viberId: body.viberId || null,
-            whatsappId: body.whatsappId || null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            ...body,
         });
 
         return NextResponse.json({

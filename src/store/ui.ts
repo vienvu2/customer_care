@@ -96,8 +96,7 @@ export const useUIStore = create<UIState>()(
                     confirmDelete: false,
                 }
             }),
-        })
-        , {
-            name: 'ui-storage', // Unique name for the storage
-        })
+        }), {
+        name: 'ui-storage', // Unique name for the storage
+    })
 )

@@ -65,6 +65,7 @@ const LeadPage = () => {
           type="primary"
           onClick={() => {
             setMode("create")
+            setDetail(undefined) // Clear detail when creating new lead
           }}
         >
           <Icon.Plus size={20} />
@@ -194,15 +195,17 @@ const LeadPage = () => {
 export default LeadPage
 
 const LeadForm = ({ onClose, data }: { onClose?: () => void; data?: Lead }) => {
-  const { register, handleSubmit, setValue } = useForm<Partial<Lead>>()
+  const { register, handleSubmit, setValue, reset } = useForm<Partial<Lead>>()
 
   useEffect(() => {
     if (data) {
       console.log("Setting form data:", data)
-      // Populate form with existing data if available
       Object.keys(data).forEach((key) => {
         setValue(key as keyof Lead, data[key as keyof Lead] || "")
       })
+    } else {
+      console.log("No data provided for form")
+      reset() // Reset form if no data is provided
     }
   }, [data])
 
@@ -418,9 +421,8 @@ const LeadImport = ({ onClose }: { onClose?: () => void }) => {
         block={true}
         type="secondary"
         onClick={() => {
-          // Handle download template logic here
           const sampleData: Partial<Lead>[] = []
-          for (let i = 0; i < 1000; i++) {
+          for (let i = 1000; i < 3000; i++) {
             sampleData.push({
               fullName: `Nguyễn Văn A ${i + 1}`,
               email: `nguyenvana-${i + 1}` + "@example.com",
