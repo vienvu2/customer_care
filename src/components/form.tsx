@@ -3,8 +3,8 @@ import { FormStyled } from "./style"
 import { Select } from "@/atom/select"
 import { Input } from "@/atom/input"
 
-export type RowInput = {
-  name: string
+export type RowInput<T> = {
+  name: keyof T
   label: string
   type: string
   placeholder?: string
@@ -13,15 +13,15 @@ export type RowInput = {
   required?: boolean
 }
 type Props<T> = {
-  inputs: RowInput[]
-  register: UseFormRegister<T>
+  inputs: RowInput<T>[]
+  register: UseFormRegister<Partial<T>>
 }
 export const FormData = <T,>(props: Props<T>) => {
   const { inputs, register } = props
-  const renderRow = (input: RowInput) => {
+  const renderRow = (input: RowInput<T>) => {
     if (input.type === "select") {
       return (
-        <Select {...register(input.name)}>
+        <Select {...register(input.name as never)}>
           {input.options?.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -33,14 +33,14 @@ export const FormData = <T,>(props: Props<T>) => {
     return (
       <Input
         placeholder={input.placeholder}
-        {...register(input.name, { required: input.required })}
+        {...register(input.name as never, { required: input.required })}
       />
     )
   }
   return (
     <div>
       {inputs.map((input) => (
-        <FormStyled.Item key={input.name}>
+        <FormStyled.Item key={input.name as string}>
           <FormStyled.Label>{input.label}</FormStyled.Label>
           {renderRow(input)}
         </FormStyled.Item>

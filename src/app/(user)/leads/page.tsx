@@ -9,7 +9,7 @@ import useList from "@/hook/list"
 import { colors } from "@/store/theme"
 import { Lead } from "@prisma/client"
 import * as Icon from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-toastify"
 
@@ -17,21 +17,31 @@ const LeadPage = () => {
   const { list, fetch } = useList<Lead>("leads")
 
   const [leadDetail, setDetail] = useState<Lead | null>(null)
-  const [isCreate, setIsCreate] = useState(false)
+  const [mode, setMode] = useState<"" | "view" | "create" | "import">("")
 
   const renderDetail = () => {
-    if (isCreate) {
+    if (mode == "create") {
       return (
         <LeadForm
+          data={leadDetail}
           onClose={() => {
-            setIsCreate(false)
-            setDetail(null)
+            setMode("")
             fetch() // Refresh the list after creating a new lead
           }}
         />
       )
     }
-    if (leadDetail) {
+    if (mode == "import") {
+      return (
+        <LeadImport
+          onClose={() => {
+            setMode("")
+            fetch() // Refresh the list after import
+          }}
+        />
+      )
+    }
+    if (leadDetail && mode == "view") {
       return (
         <LeadDetail
           lead={leadDetail}
@@ -50,12 +60,24 @@ const LeadPage = () => {
           key="add-lead"
           type="primary"
           onClick={() => {
-            // Handle add new lead action
-            setIsCreate(true)
+            setMode("create")
           }}
         >
           <Icon.Plus size={20} />
           Tạo mới
+        </Button>,
+
+        <Button
+          key="import-leads"
+          type="secondary"
+          onClick={() => {
+            // Handle import leads action
+            setMode("import")
+            console.log("Import leads")
+          }}
+        >
+          <Icon.Upload size={20} />
+          Nhập khách hàng
         </Button>,
       ]}
       title="Quản Lý Khách Hàng"
@@ -144,15 +166,26 @@ const LeadPage = () => {
 
 export default LeadPage
 
-const LeadForm = ({ onClose }: { onClose?: () => void }) => {
+const LeadForm = ({ onClose, data }: { onClose?: () => void; data?: Lead }) => {
   const {
     register,
     handleSubmit,
     validate,
+    setValue,
     formState: { errors },
   } = useForm<Partial<Lead>>()
 
-  const inputs: RowInput[] = [
+  useEffect(() => {
+    if (data) {
+      console.log("Setting form data:", data)
+      // Populate form with existing data if available
+      Object.keys(data).forEach((key) => {
+        setValue(key as keyof Lead, data[key as keyof Lead] || "")
+      })
+    }
+  }, [data])
+
+  const inputs: RowInput<Lead>[] = [
     {
       name: "fullName",
       label: "Họ và tên",
@@ -338,5 +371,28 @@ const LeadDetail = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
         </Button>
       </DetailPage.Actions>
     </DetailPage.Wrap>
+  )
+}
+
+const LeadImport = ({ onClose }: { onClose?: () => void }) => {
+  // Implement the import functionality here
+  return (
+    <FormStyled.Wrap>
+      <FormStyled.Title>
+        <Icon.Upload size={24} />
+        Nhập khách hàng
+        <div style={{ flex: 1 }} />
+        <Button
+          type="light"
+          onClick={() => {
+            if (onClose) onClose()
+          }}
+        >
+          <Icon.X size={20} color={colors.textPrimary} />
+        </Button>
+      </FormStyled.Title>
+      {/* Add your import form or file upload component here */}
+      <p>Chức năng nhập khách hàng sẽ được triển khai sau.</p>
+    </FormStyled.Wrap>
   )
 }
