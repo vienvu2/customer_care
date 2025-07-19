@@ -1,20 +1,20 @@
 "use client"
 import { Button } from "@/atom/button"
-import { Input } from "@/atom/input"
-import { FormStyled, Styled } from "@/components/style"
+import { FormData, RowInput } from "@/components/form"
+import { Flex, FormStyled, DetailPage } from "@/components/style"
 import { Table } from "@/components/table"
-import { ListPage, Layout } from "@/containers/wrap"
+import { ListPage } from "@/containers/wrap"
 import useCreate from "@/hook/create"
 import useList from "@/hook/list"
-import { LeadCreateDTO } from "@/lib/services/leadService"
 import { colors } from "@/store/theme"
 import { Lead } from "@prisma/client"
 import * as Icon from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 
 const LeadPage = () => {
-  const { list } = useList<Lead>("leads")
+  const { list, fetch } = useList<Lead>("leads")
 
   const [leadDetail, setDetail] = useState<Lead | null>(null)
   const [isCreate, setIsCreate] = useState(false)
@@ -26,12 +26,20 @@ const LeadPage = () => {
           onClose={() => {
             setIsCreate(false)
             setDetail(null)
+            fetch() // Refresh the list after creating a new lead
           }}
         />
       )
     }
     if (leadDetail) {
-      return <LeadDetail lead={leadDetail} />
+      return (
+        <LeadDetail
+          lead={leadDetail}
+          onClose={() => {
+            setDetail(null)
+          }}
+        />
+      )
     }
     return null
   }
@@ -55,7 +63,6 @@ const LeadPage = () => {
     >
       <Table<Lead>
         list={list}
-        onRowClick={(lead) => setDetail(lead)}
         columns={[
           {
             key: "id",
@@ -78,6 +85,57 @@ const LeadPage = () => {
             align: "left",
             render: (lead) => lead.email,
           },
+          {
+            key: "phoneNumber",
+            label: "Số điện thoại",
+            width: "150px",
+            align: "left",
+            render: (lead) => lead.phoneNumber,
+          },
+          {
+            key: "source",
+            label: "Nguồn khách hàng",
+            width: "150px",
+            align: "left",
+            render: (lead) => lead.source,
+          },
+          {
+            key: "createdAt",
+            label: "Ngày tạo",
+            width: "150px",
+            align: "left",
+            render: (lead) => new Date(lead.createdAt).toLocaleDateString(),
+          },
+          {
+            key: "actions",
+            label: "Actions",
+            width: "100px",
+            align: "left",
+            render: (lead) => (
+              <Flex>
+                <Button
+                  type="secondary"
+                  size="small"
+                  onClick={() => {
+                    setDetail(lead)
+                  }}
+                >
+                  <Icon.Edit size={14} />
+                </Button>
+                <Button
+                  type="danger"
+                  size="small"
+                  onClick={() => {
+                    // Handle delete action
+                    console.log("Delete lead", lead.id)
+                  }}
+                >
+                  <Icon.Trash size={14} />
+                </Button>
+              </Flex>
+            ),
+            // Add actions column for edit/delete if needed
+          },
         ]}
       />
     </ListPage>
@@ -86,43 +144,35 @@ const LeadPage = () => {
 
 export default LeadPage
 
-type LeadInput = {
-  name: keyof Lead
-  label: string
-  type: string
-  placeholder: string
-  value: string
-  options?: { value: string; label: string }[]
-}
-
 const LeadForm = ({ onClose }: { onClose?: () => void }) => {
   const {
     register,
     handleSubmit,
+    validate,
     formState: { errors },
   } = useForm<Partial<Lead>>()
 
-  const inputs: LeadInput[] = [
+  const inputs: RowInput[] = [
     {
       name: "fullName",
       label: "Họ và tên",
       type: "text",
       placeholder: "Nhập họ và tên",
-      value: "",
+      required: true,
     },
     {
       name: "email",
       label: "Email",
       type: "email",
       placeholder: "Nhập email",
-      value: "",
+      required: true,
     },
     {
       name: "phoneNumber",
       label: "Số điện thoại",
       type: "text",
       placeholder: "Nhập số điện thoại",
-      value: "",
+      required: true,
     },
     {
       name: "source",
@@ -134,47 +184,63 @@ const LeadForm = ({ onClose }: { onClose?: () => void }) => {
         { value: "social_media", label: "Mạng xã hội" },
         { value: "referral", label: "Giới thiệu" },
       ],
-      value: "website", // Default value, can be changed
+      required: true,
     },
     {
       name: "zaloId",
       label: "Zalo ID",
       type: "text",
       placeholder: "Nhập Zalo ID (nếu có)",
-      value: "",
     },
     {
       name: "viberId",
       label: "Viber ID",
       type: "text",
       placeholder: "Nhập Viber ID (nếu có)",
-      value: "",
     },
     {
       name: "whatsappId",
       label: "WhatsApp ID",
       type: "text",
       placeholder: "Nhập WhatsApp ID (nếu có)",
-      value: "",
     },
     {
       name: "notes",
       label: "Ghi chú",
       type: "text",
       placeholder: "Nhập ghi chú",
-      value: "",
     },
   ]
 
   const { create } = useCreate<Lead>("leads")
 
-  const onSubmit = (data: unknown) => {
+  const onSubmit = (data: Partial<Lead>) => {
     console.log("Form submitted with data:", data)
-    // create(data)
-    console.log("Creating lead with data:", data)
+    create(
+      data,
+      () => {
+        console.log("Lead created successfully")
+        if (onClose) onClose()
+      },
+      (error) => {
+        console.error("Error creating lead:", error)
+        toast("Lỗi khi tạo khách hàng", {
+          type: "error",
+          autoClose: 5000,
+        })
+      }
+    )
+  }
+  const runSubmit = () => {
+    handleSubmit(onSubmit, (errors) => {
+      console.error("Validation errors:", errors)
+      toast("Vui lòng điền đầy đủ thông tin", {
+        type: "warning",
+        autoClose: 5000,
+      })
+    })()
   }
 
-  console.log(errors)
   return (
     <FormStyled.Wrap>
       <FormStyled.Title>
@@ -190,37 +256,87 @@ const LeadForm = ({ onClose }: { onClose?: () => void }) => {
           <Icon.X size={20} color={colors.textPrimary} />
         </Button>
       </FormStyled.Title>
-      {inputs.map((input) => (
-        <FormStyled.Item key={input.name}>
-          <FormStyled.Label>{input.label}</FormStyled.Label>
-          <Input
-            placeholder={input.placeholder}
-            {...register(input.name, {
-              required: `${input.label} là bắt buộc`,
-            })}
-          />
-        </FormStyled.Item>
-      ))}
-      {/* Add form fields for creating or editing a lead */}
-      <Button onClick={() => handleSubmit(onSubmit)}>Lưu</Button>
+      <FormData<Lead> inputs={inputs} register={register} />
+      <Button block={true} type="primary" onClick={() => runSubmit()}>
+        Lưu thông tin khách hàng
+      </Button>
     </FormStyled.Wrap>
   )
 }
 
-const LeadDetail = ({ lead }: { lead: Lead }) => {
+const LeadDetail = ({ lead, onClose }: { lead: Lead; onClose: () => void }) => {
   return (
-    <div>
-      <h2>Chi tiết khách hàng</h2>
-      <p>
-        <strong>ID:</strong> {lead.id}
-      </p>
-      <p>
-        <strong>Tên:</strong> {lead.fullName}
-      </p>
-      <p>
-        <strong>Email:</strong> {lead.email}
-      </p>
-      {/* Add more fields as necessary */}
-    </div>
+    <DetailPage.Wrap>
+      <DetailPage.Title>
+        <Icon.User2 size={24} />
+        Chi tiết khách hàng
+        <div style={{ flex: 1 }} />
+        <Button
+          type="light"
+          onClick={() => {
+            onClose && onClose()
+            console.log("Close detail view")
+          }}
+        >
+          <Icon.X size={20} color={colors.textPrimary} />
+        </Button>
+      </DetailPage.Title>
+      <DetailPage.Content>
+        <DetailPage.Row>
+          <DetailPage.Label>Họ và tên:</DetailPage.Label>
+          <DetailPage.Value>{lead.fullName}</DetailPage.Value>
+        </DetailPage.Row>
+        <DetailPage.Row>
+          <DetailPage.Label>Email:</DetailPage.Label>
+          <DetailPage.Value>{lead.email}</DetailPage.Value>
+        </DetailPage.Row>
+        <DetailPage.Row>
+          <DetailPage.Label>Số điện thoại:</DetailPage.Label>
+          <DetailPage.Value>{lead.phoneNumber}</DetailPage.Value>
+        </DetailPage.Row>
+        <DetailPage.Row>
+          <DetailPage.Label>Nguồn khách hàng:</DetailPage.Label>
+          <DetailPage.Value>{lead.source}</DetailPage.Value>
+        </DetailPage.Row>
+        <DetailPage.Row>
+          <DetailPage.Label>Zalo ID:</DetailPage.Label>
+          <DetailPage.Value>{lead.zaloId || "Không có"}</DetailPage.Value>
+        </DetailPage.Row>
+        <DetailPage.Row>
+          <DetailPage.Label>Viber ID:</DetailPage.Label>
+          <DetailPage.Value>{lead.viberId || "Không có"}</DetailPage.Value>
+        </DetailPage.Row>
+        <DetailPage.Row>
+          <DetailPage.Label>WhatsApp ID:</DetailPage.Label>
+          <DetailPage.Value>{lead.whatsappId || "Không có"}</DetailPage.Value>
+        </DetailPage.Row>
+        <DetailPage.Row>
+          <DetailPage.Label>Ghi chú:</DetailPage.Label>
+          <DetailPage.Value>{lead.notes || "Không có"}</DetailPage.Value>
+        </DetailPage.Row>
+      </DetailPage.Content>
+      <DetailPage.Actions>
+        <Button
+          type="secondary"
+          onClick={() => {
+            // Handle edit action
+            console.log("Edit lead", lead.id)
+          }}
+        >
+          <Icon.Edit size={20} />
+          Chỉnh sửa
+        </Button>
+        <Button
+          type="danger"
+          onClick={() => {
+            // Handle delete action
+            console.log("Delete lead", lead.id)
+          }}
+        >
+          <Icon.Trash size={20} />
+          Xóa
+        </Button>
+      </DetailPage.Actions>
+    </DetailPage.Wrap>
   )
 }

@@ -1,77 +1,50 @@
-type Props = {
-  inputs: {
-    name: string
-    type:
-      | "text"
-      | "email"
-      | "password"
-      | "tel"
-      | "select"
-      | "textarea"
-      | "money"
-    placeholder?: string
-    value?: string
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  }[]
-  errors?: { [key: string]: string }
-  warning?: { [key: string]: string }
-  onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void
-  onCancel?: () => void
-  submitText?: string
-  cancelText?: string
-  className?: string
-}
+import { useForm, UseFormRegister } from "react-hook-form"
+import { FormStyled } from "./style"
+import { Select } from "@/atom/select"
+import { Input } from "@/atom/input"
 
-export const Form = ({
-  inputs,
-  onSubmit = (e) => e.preventDefault(),
-  onCancel,
-  submitText,
-  cancelText,
-}: Props) => {
+export type RowInput = {
+  name: string
+  label: string
+  type: string
+  placeholder?: string
+  value?: string
+  options?: { value: string; label: string }[]
+  required?: boolean
+}
+type Props<T> = {
+  inputs: RowInput[]
+  register: UseFormRegister<T>
+}
+export const FormData = <T,>(props: Props<T>) => {
+  const { inputs, register } = props
+  const renderRow = (input: RowInput) => {
+    if (input.type === "select") {
+      return (
+        <Select {...register(input.name)}>
+          {input.options?.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
+      )
+    }
+    return (
+      <Input
+        placeholder={input.placeholder}
+        {...register(input.name, { required: input.required })}
+      />
+    )
+  }
   return (
-    <form className="form" onSubmit={onSubmit} style={{ width: "100%" }}>
-      {inputs.map((input, index) => (
-        <div key={index} className="form-group">
-          <label htmlFor={input.name}>{input.name}</label>
-          {input.type === "select" ? (
-            <select
-              id={input.name}
-              name={input.name}
-              value={input.value}
-              //   onChange={input.onChange}
-            >
-              {/* Options can be passed as a prop or hardcoded */}
-              <option value="">Select an option</option>
-            </select>
-          ) : input.type === "textarea" ? (
-            <textarea
-              id={input.name}
-              name={input.name}
-              placeholder={input.placeholder}
-              value={input.value}
-              //   onChange={input.onChange}
-            />
-          ) : (
-            <input
-              type={input.type}
-              id={input.name}
-              name={input.name}
-              placeholder={input.placeholder}
-              value={input.value}
-              onChange={input.onChange}
-            />
-          )}
-        </div>
+    <div>
+      {inputs.map((input) => (
+        <FormStyled.Item key={input.name}>
+          <FormStyled.Label>{input.label}</FormStyled.Label>
+          {renderRow(input)}
+        </FormStyled.Item>
       ))}
-      <div className="form-actions">
-        <button type="submit">{submitText || "Submit"}</button>
-        {onCancel && (
-          <button type="button" onClick={onCancel}>
-            {cancelText || "Cancel"}
-          </button>
-        )}
-      </div>
-    </form>
+    </div>
   )
 }

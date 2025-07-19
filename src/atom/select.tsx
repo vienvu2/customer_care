@@ -4,35 +4,22 @@ import { colors, spacing, radius } from "@/store/theme"
 type Props = {
   onClick?: () => void
   children?: React.ReactNode
-  leftIcon?: React.ReactNode
-  rightIcon?: React.ReactNode
-  type?: string
-  outline?: boolean
-  size?: "small" | "medium" | "large"
-  disabled?: boolean
   value?: string
   placeholder?: string
-  onChange?: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void
-  disable?: boolean
-
+  onChange?: (e: never) => void
+  disabled?: boolean
   label?: string
-  name?: string
+
+  size?: "small" | "medium" | "large"
 }
 
-export const Input = (props: Props) => {
-  const { label, size, type } = props
-  if (type == "textarea") {
-    return <Styled.Textarea {...props} size={size} />
-  }
+export const Select = (props: Props) => {
+  const { size } = props
+
   return (
-    <Styled.Input
-      {...props}
-      size={size}
-      is_left={props.leftIcon ? "true" : "false"}
-      is_right={props.rightIcon ? "true" : "false"}
-    />
+    <Styled.Select {...props} size={size}>
+      {props.children}
+    </Styled.Select>
   )
 }
 
@@ -88,42 +75,8 @@ const Styled = {
     }
   `,
 
-  Textarea: styled.textarea<{ size: Props["size"] }>`
-    width: 100%;
-    border: 1px solid ${colors.borderPrimary};
-    border-radius: ${radius.md};
-    background-color: ${colors.bgPrimary};
-    color: ${colors.textPrimary};
-    font-size: ${(props) => getSizeStyles(props.size).fontSize};
-    height: ${(props) => getSizeStyles(props.size).height};
-    padding: ${(props) => getSizeStyles(props.size).padding};
-
-    transition: all 0.2s ease;
-
-    &::placeholder {
-      color: ${colors.textTertiary};
-    }
-
-    &:focus {
-      outline: none;
-      border-color: ${colors.borderFocus};
-      box-shadow: 0 0 0 3px ${colors.primaryLight};
-    }
-
-    &:hover:not(:disabled) {
-      border-color: ${colors.borderSecondary};
-    }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      background-color: ${colors.bgSecondary};
-    }
-  `,
-  Input: styled.input<{
+  Select: styled.select<{
     size: Props["size"]
-    is_left: string
-    is_right: string
   }>`
     width: 100%;
     border: 1px solid ${colors.borderPrimary};
@@ -133,14 +86,8 @@ const Styled = {
     font-size: ${(props) => getSizeStyles(props.size).fontSize};
     height: ${(props) => getSizeStyles(props.size).height};
     padding: ${(props) => getSizeStyles(props.size).padding};
-    padding-left: ${(props) =>
-      props.is_left == "true"
-        ? "40px"
-        : getSizeStyles(props.size).padding.split(" ")[1]};
-    padding-right: ${(props) =>
-      props.is_right == "true"
-        ? "40px"
-        : getSizeStyles(props.size).padding.split(" ")[1]};
+    padding-top: 0;
+    padding-bottom: 0;
 
     transition: all 0.2s ease;
 

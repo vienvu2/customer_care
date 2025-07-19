@@ -10,6 +10,7 @@ type Props = {
   outline?: boolean
   size?: "small" | "medium" | "large"
   disabled?: boolean
+  block?: boolean
 }
 
 export const Button = ({
@@ -19,13 +20,15 @@ export const Button = ({
   outline = false,
   size = "medium",
   disabled = false,
+  block = false,
 }: Props) => {
   return (
     <Styled.Button
       onClick={onClick}
-      type="button"
       disabled={disabled}
-      className={`b-${type} b-${size} b-${outline ? "outline" : ""}`}
+      className={`b-${type} b-${size} b-${outline ? "outline" : ""} ${
+        block ? "b-block" : ""
+      }`}
     >
       {children}
     </Styled.Button>
@@ -94,18 +97,29 @@ const Styled = {
       padding: 0 20px;
       font-size: 16px;
     }
-  `,
 
-  Outline: styled.button`
-    padding: 12px 24px;
-    color: #0070f3;
-    background-color: transparent;
-    border: 2px solid #0070f3;
-    border-radius: 5px;
-    cursor: pointer;
+    &:hover:not(:disabled) {
+      border-color: ${colors.borderSecondary};
+    }
 
-    &:hover {
-      background-color: rgba(0, 112, 243, 0.1);
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background-color: ${colors.bgSecondary};
+    }
+
+    &.b-outline {
+      background-color: transparent;
+      border: 1px solid ${colors.primary};
+      color: ${colors.primary};
+
+      &:hover {
+        background-color: rgba(0, 112, 243, 0.1);
+      }
+    }
+    &.b-block {
+      display: block;
+      width: 100%;
     }
   `,
 }

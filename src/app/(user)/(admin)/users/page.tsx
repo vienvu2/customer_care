@@ -6,25 +6,45 @@ import { Table } from "@/components/table"
 import { Button } from "@/atom/button"
 import useList from "@/hook/list"
 import { User } from "@prisma/client"
+import { FormStyled } from "@/components/style"
 
 export default function Home() {
   const { list, loading } = useList<User>("users")
 
+  const [isCreate, setIsCreate] = useState(false)
+
   const [userDetail, setUserDetail] = useState<User | null>(null)
 
+  const renderDetail = () => {
+    if (isCreate) {
+      return <UserCreate />
+    }
+    if (userDetail) {
+      return <UserDetail user={userDetail} />
+    }
+    return null
+  }
+
   return (
-    <ListPage detail={userDetail ? <UserDetail user={userDetail} /> : null}>
+    <ListPage
+      detail={renderDetail()}
+      title="Quản Lý Người Dùng"
+      actions={[
+        <Button
+          key="add-user"
+          type="primary"
+          onClick={() => {
+            setIsCreate(true)
+          }}
+        >
+          Thêm Người Dùng
+        </Button>,
+      ]}
+    >
       <Table<User>
         list={list}
         onRowClick={(user) => setUserDetail(user)}
         columns={[
-          {
-            key: "id",
-            label: "ID",
-            width: "50px",
-            align: "left",
-            render: (user) => user.id,
-          },
           {
             key: "fullName",
             label: "Full Name",
@@ -49,6 +69,15 @@ export default function Home() {
         ]}
       />
     </ListPage>
+  )
+}
+
+const UserCreate = () => {
+  return (
+    <FormStyled.Wrap>
+      
+      <Button onClick={() => console.log("Create user")}>Tạo Người Dùng</Button>
+    </FormStyled.Wrap>
   )
 }
 

@@ -11,6 +11,12 @@ export const Col = styled.div<{ span?: number }>`
   padding: 0 12px;
 `
 
+export const Flex = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
 export const Styled = {
   Wrap: styled.div`
     padding: 12px;
@@ -99,4 +105,40 @@ export const FormStyled = {
   Item: styled.div`
     margin-bottom: 12px;
   `,
+}
+
+export const DetailPage = {
+  Wrap: styled.div`
+    padding: 12px;
+    color: ${colors.textPrimary};
+  `,
+  Title: styled.h2`
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  `,
+  Content: styled.div`
+    margin-top: 12px;
+  `,
+  Row: styled.div`
+    display: flex;
+    margin-bottom: 12px;
+  `,
+  Label: styled.label`
+    font-weight: bold;
+    color: ${colors.textSecondary};
+    width: 150px;
+  `,
+  Value: styled.div`
+    color: ${colors.textPrimary};
+  `,
+
+  Actions: styled.div`
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;`
 }
