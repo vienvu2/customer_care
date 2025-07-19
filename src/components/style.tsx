@@ -1,3 +1,5 @@
+
+'use client'
 import { colors } from "@/store/theme"
 import styled from "styled-components"
 

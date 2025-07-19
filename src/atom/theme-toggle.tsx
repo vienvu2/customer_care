@@ -34,7 +34,7 @@ const Styled = {
     cursor: pointer;
     transition: all 0.2s ease;
 
-    &:hover {
+  &:hover {
       background-color: ${colors.bgSecondary};
       color: ${colors.textPrimary};
       border-color: ${colors.borderSecondary};
